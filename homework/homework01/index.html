@@ -1,9 +1,20 @@
 <!DOCTYPE html>
 <html lang="ko">
   <head>
-    <title>리액트 실습</title>
-
-    <link rel="stylesheet" href="./index.css" />
+    <title>게시판</title>
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- CSS -->
+    <style type="text/tailwindcss">
+      @layer components {
+        .input-primary {
+          @apply border border-gray-300 placeholder:text-gray-400 rounded-lg py-3 px-4;
+        }
+        .label-text {
+          @apply font-medium text-base;
+        }
+      }
+    </style>
 
     <!-- 리액트 다운로드 -->
     <script
@@ -17,16 +28,10 @@
     <!-- Load Babel -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    <!-- Babel 기능 -->
-    <!-- 1. 최신문법으로 작성해도, 많은 브라우저에서 실행 가능하도록 옛날 문법으로 바꿔줌 -->
-    <!-- 2. JSX로 입력하면, HTML로 바꿔줌 -->
-    <script type="text/babel" src="./list.js"></script>
-    <script type="text/babel" src="./youtuber.js"></script>
     <script type="text/babel" src="./index.js"></script>
-
     <script type="text/babel">
       const root = ReactDOM.createRoot(document.getElementById('root'));
-      root.render(<메인페이지 />);
+      root.render(<게시글등록페이지 />);
     </script>
   </head>
   <body>
