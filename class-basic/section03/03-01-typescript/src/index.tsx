@@ -18,7 +18,9 @@ const myPageList = createBrowserRouter([
   { path: '/board2-refactoring', element: <BoardRefactoring /> },
 ]);
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(
+  document.getElementById('root') as ReactDOM.Container,
+);
 root.render(<RouterProvider router={myPageList} />);
 
 // If you want to start measuring performance in your app, pass a function
