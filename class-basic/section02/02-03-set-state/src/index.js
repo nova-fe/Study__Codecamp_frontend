@@ -1,0 +1,25 @@
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import Aaa from './routes/aaa';
+import Bbb from './routes/bbb';
+import Board from './routes/board1';
+
+const myPageList = createBrowserRouter([
+  { path: '/', element: <App /> },
+  { path: '/aaa', element: <Aaa /> },
+  { path: '/bbb', element: <Bbb /> },
+  { path: "/board", element: <Board />}
+]);
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<RouterProvider router={myPageList} />);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
