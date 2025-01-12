@@ -1,21 +1,17 @@
+/******************************
+* {
+  box-sizing: border-box; => 안 써도 됨, @tailwind base 에 들어있음.
+} 
+*******************************/
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* 내가 만드는 부트스트랩 CSS */
+@layer utilities {
+  .철수의상자 {
+    color: green;
+    font-size: 30px;
   }
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
 }
