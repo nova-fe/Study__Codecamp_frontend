@@ -2,8 +2,11 @@
 
 import { ChangeEvent, useState } from 'react';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 const BoardsNew = () => {
+  const router = useRouter();
+
   const [writer, setWriter] = useState('');
   const [password, setPassword] = useState('');
   const [title, setTitle] = useState('');
@@ -57,21 +60,28 @@ const BoardsNew = () => {
     setIsActive(false);
   };
 
-  const onClickPost = () => {
+  const onClickPost = async () => {
     if (writer && password && title && contents) {
       setWriterError(false);
       setPasswordError(false);
       setTitleError(false);
       setContentsError(false);
 
-      axios
-        .post('http://main-example.codebootcamp.co.kr/board', data)
-        .then(response => {
-          console.log(response);
-        })
-        .catch(error => {
-          console.log(error);
-        });
+      try {
+        // Firebase에 게시글 추가
+        const response = await axios.post(
+          'https://nova-codecamp-board-default-rtdb.firebaseio.com/homework.json',
+          data,
+        );
+
+        alert('게시글 등록이 완료되었습니다.');
+        // 게시글이 추가된 후, 해당 게시글의 ID로 이동
+        const boardId = response.data.name; // Firebase가 반환하는 자동 생성된 ID
+        router.push(`/boards/${boardId}`);
+      } catch (error) {
+        alert('에러가 발생하였습니다. 다시 시도해 주세요.');
+        console.error('게시글 작성 실패:', error);
+      }
 
       return;
     } else {
@@ -123,6 +133,7 @@ const BoardsNew = () => {
                 비밀번호<span className="text-red-500"> *</span>
               </label>
               <input
+                type="password"
                 className="input-primary"
                 placeholder="비밀번호를 입력해 주세요."
                 onChange={onChangePassword}
