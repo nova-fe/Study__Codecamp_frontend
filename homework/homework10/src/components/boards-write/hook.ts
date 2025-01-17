@@ -1,7 +1,7 @@
 import { useEffect, ChangeEvent, useState } from 'react';
-import axios from 'axios';
 import { useParams, useRouter } from 'next/navigation';
 import { IBoardsWriteData } from './types';
+import { createBoard, fetchBoard, updateBoard } from '@/api';
 
 export const useBoardsWrite = () => {
   const router = useRouter();
@@ -71,14 +71,11 @@ export const useBoardsWrite = () => {
 
       try {
         // Firebase에 게시글 추가
-        const response = await axios.post(
-          'https://nova-codecamp-board-default-rtdb.firebaseio.com/homework.json',
-          newData,
-        );
+        const data = await createBoard(newData);
 
         alert('게시글 등록이 완료되었습니다.');
         // 게시글이 추가된 후, 해당 게시글의 ID로 이동
-        const boardId = response.data.name; // Firebase가 반환하는 자동 생성된 ID
+        const boardId = data.name; // Firebase가 반환하는 자동 생성된 ID
         router.push(`/boards/${boardId}`);
       } catch (error) {
         alert('에러가 발생하였습니다. 다시 시도해 주세요.');
@@ -123,10 +120,7 @@ export const useBoardsWrite = () => {
           contents: contents || prevData?.contents,
         };
 
-        await axios.patch(
-          `https://nova-codecamp-board-default-rtdb.firebaseio.com/homework/${boardId}.json`,
-          updatedData,
-        );
+        await updateBoard(boardId, updatedData);
 
         alert('게시글 수정이 완료되었습니다.');
         router.push(`/boards/${boardId}`);
@@ -143,21 +137,19 @@ export const useBoardsWrite = () => {
   const [prevData, setPrevData] = useState<IBoardsWriteData>();
 
   useEffect(() => {
-    const fetchBoard = async () => {
+    const loadBoard = async () => {
       try {
         // Firebase Realtime Database에서 해당 게시글 불러오기
-        const response = await axios.get(
-          `https://nova-codecamp-board-default-rtdb.firebaseio.com/homework/${boardId}.json`,
-        );
+        const data = await fetchBoard(boardId);
 
-        setPrevData(response.data);
+        setPrevData(data);
       } catch (error) {
         console.error('게시글 조회 실패:', error);
       }
     };
 
-    // boardId 가 유효할 때만 fetchBoard 호출
-    if (boardId) fetchBoard();
+    // boardId 가 유효할 때만 loadBoard 호출
+    if (boardId) loadBoard();
   }, [boardId]);
 
   return {

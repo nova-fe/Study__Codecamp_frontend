@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { IBoardsListData } from './types';
+import { deleteBoard, fetchBoards } from '@/api';
 
 export const useBoardsList = () => {
   const [boards, setBoards] = useState<IBoardsListData[]>();
@@ -21,14 +21,12 @@ export const useBoardsList = () => {
   };
 
   useEffect(() => {
-    const fetchBoards = async () => {
+    const loadBoards = async () => {
       try {
         // 목록 전체 불러옴
-        const response = await axios.get(
-          `https://nova-codecamp-board-default-rtdb.firebaseio.com/homework.json`,
-        );
-        const data = response.data;
+        const data = await fetchBoards();
 
+        // 목록 객체 배열화
         const boardArray = data
           ? Object.keys(data).map((key, index) => ({
               id: key, // 고유 ID
@@ -38,13 +36,12 @@ export const useBoardsList = () => {
           : [];
 
         setBoards(boardArray);
-        // 데이터를 배열로 변환
       } catch (error) {
         console.error('목록 조회 실패:', error);
       }
     };
 
-    fetchBoards();
+    loadBoards();
   }, []);
 
   const onClickLink = (boardId: string) => {
@@ -53,9 +50,8 @@ export const useBoardsList = () => {
 
   const onClickDelete = async (boardId: string) => {
     try {
-      await axios.delete(
-        `https://nova-codecamp-board-default-rtdb.firebaseio.com/homework/${boardId}.json`,
-      );
+      await deleteBoard(boardId);
+
       alert('삭제되었습니다.');
 
       // 삭제된 게시글을 제외하고 상태 업데이트
