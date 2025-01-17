@@ -1,4 +1,4 @@
-// 등록 페이지
+// 작성 페이지
 'use client';
 
 import BoardsWrite from '@/components/09-05-boards-write-container-presentational/boards-write.container';
