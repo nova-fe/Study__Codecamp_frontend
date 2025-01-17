@@ -1,10 +1,11 @@
-import { ChangeEvent, useState } from 'react';
+import { useEffect, ChangeEvent, useState } from 'react';
 import axios from 'axios';
 import { useParams, useRouter } from 'next/navigation';
+import { IBoardsWriteData } from './types';
 
-export const useBoardsWrite = props => {
+export const useBoardsWrite = () => {
   const router = useRouter();
-  const { boardId } = useParams();
+  const { boardId } = useParams() as { boardId: string };
 
   const [writer, setWriter] = useState('');
   const [password, setPassword] = useState('');
@@ -18,7 +19,7 @@ export const useBoardsWrite = props => {
 
   const [isActive, setIsActive] = useState(false);
 
-  const data = {
+  const newData = {
     writer,
     password,
     title,
@@ -72,7 +73,7 @@ export const useBoardsWrite = props => {
         // Firebase에 게시글 추가
         const response = await axios.post(
           'https://nova-codecamp-board-default-rtdb.firebaseio.com/homework.json',
-          data,
+          newData,
         );
 
         alert('게시글 등록이 완료되었습니다.');
@@ -110,26 +111,54 @@ export const useBoardsWrite = props => {
   };
 
   // 게시글 업데이트
-  const onClickUpdate = boardId => {
-    try {
-      const updatedData = {
-        ...props.data,
-        title: title || props.data?.title,
-        contents: contents || props.data?.contents,
-      };
+  const onClickUpdate = async () => {
+    const password = prompt(
+      '글을 입력할때 입력하셨던 비밀번호를 입력해주세요.',
+    );
+    if (password === prevData?.password) {
+      try {
+        const updatedData = {
+          ...prevData,
+          title: title || prevData?.title,
+          contents: contents || prevData?.contents,
+        };
 
-      axios.patch(
-        `https://nova-codecamp-board-default-rtdb.firebaseio.com/homework/${boardId}.json`,
-        updatedData,
-      );
+        await axios.patch(
+          `https://nova-codecamp-board-default-rtdb.firebaseio.com/homework/${boardId}.json`,
+          updatedData,
+        );
 
-      alert('게시글 수정이 완료되었습니다.');
-      router.push(`/boards/${boardId}`);
-    } catch (error) {
-      alert('에러가 발생하였습니다. 다시 시도해 주세요.');
-      console.error('게시글 수정 실패:', error);
+        alert('게시글 수정이 완료되었습니다.');
+        router.push(`/boards/${boardId}`);
+      } catch (error) {
+        alert('에러가 발생하였습니다. 다시 시도해 주세요.');
+        console.error('게시글 수정 실패:', error);
+      }
+    } else {
+      alert('비밀번호를 확인해주세요.');
     }
   };
+
+  // 기존 게시글 내용 가져오기
+  const [prevData, setPrevData] = useState<IBoardsWriteData>();
+
+  useEffect(() => {
+    const fetchBoard = async () => {
+      try {
+        // Firebase Realtime Database에서 해당 게시글 불러오기
+        const response = await axios.get(
+          `https://nova-codecamp-board-default-rtdb.firebaseio.com/homework/${boardId}.json`,
+        );
+
+        setPrevData(response.data);
+      } catch (error) {
+        console.error('게시글 조회 실패:', error);
+      }
+    };
+
+    // boardId 가 유효할 때만 fetchBoard 호출
+    if (boardId) fetchBoard();
+  }, [boardId]);
 
   return {
     onChangeWriter,
@@ -144,5 +173,7 @@ export const useBoardsWrite = props => {
     contentsError,
     isActive,
     errMessage,
+    boardId,
+    prevData,
   };
 };

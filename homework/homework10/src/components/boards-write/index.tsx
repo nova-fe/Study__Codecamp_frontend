@@ -1,19 +1,22 @@
 import { useBoardsWrite } from './hook';
+import { IBoardsWriteProps } from './types';
 
-export default function BoardsWrite(props) {
+export default function BoardsWrite(props: IBoardsWriteProps) {
   const {
     onChangeWriter,
     onChangePassword,
     onChangeContents,
     onChangeTitle,
     onClickPost,
+    onClickUpdate,
     writerError,
     passwordError,
     titleError,
     contentsError,
     isActive,
     errMessage,
-  } = useBoardsWrite(props);
+    prevData,
+  } = useBoardsWrite();
 
   return (
     <>
@@ -32,8 +35,8 @@ export default function BoardsWrite(props) {
                 className="input-primary"
                 placeholder="작성자 명을 입력해 주세요."
                 onChange={onChangeWriter}
-                defaultValue={props.data?.writer}
-                disabled={true}
+                defaultValue={prevData?.writer}
+                disabled={props.isEdit ? true : false}
               />
               {writerError && (
                 <div className="mt-2 text-red-500">{errMessage}</div>
@@ -48,8 +51,8 @@ export default function BoardsWrite(props) {
                 className="input-primary"
                 placeholder="비밀번호를 입력해 주세요."
                 onChange={onChangePassword}
-                defaultValue={props.data?.password}
-                disabled={true}
+                defaultValue={prevData?.password}
+                disabled={props.isEdit ? true : false}
               />
               {passwordError && (
                 <div className="mt-2 text-red-500">{errMessage}</div>
@@ -67,7 +70,7 @@ export default function BoardsWrite(props) {
                 className="input-primary"
                 placeholder="제목을 입력해 주세요."
                 onChange={onChangeTitle}
-                defaultValue={props.data?.title}
+                defaultValue={prevData?.title}
               />
               {titleError && (
                 <div className="mt-2 text-red-500">{errMessage}</div>
@@ -85,7 +88,7 @@ export default function BoardsWrite(props) {
                 className="input-primary h-[22rem] resize-none"
                 placeholder="내용을 입력해 주세요."
                 onChange={onChangeContents}
-                defaultValue={props.data?.contents}
+                defaultValue={prevData?.contents}
               ></textarea>
               {contentsError && (
                 <div className="mt-2 text-red-500">{errMessage}</div>
@@ -145,8 +148,8 @@ export default function BoardsWrite(props) {
           <div className="flex justify-end gap-4">
             <button className="btn-black btn-md">취소</button>
             <button
-              className={`${isActive ? 'btn-primary' : 'btn-gray'} btn-md`}
-              onClick={onClickPost}
+              className={`${isActive || props.isEdit ? 'btn-primary' : 'btn-gray'} btn-md`}
+              onClick={props.isEdit ? onClickUpdate : onClickPost}
             >
               {props.isEdit ? '수정' : '등록'} 하기
             </button>
