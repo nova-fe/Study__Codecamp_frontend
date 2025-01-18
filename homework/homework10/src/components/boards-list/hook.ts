@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { IBoardsListData } from './types';
 import { deleteBoard, fetchBoards } from '@/api';
+import { DeleteBoardRequestSchema, FetchBoardsResponseSchema } from '@/schemas';
 
 export const useBoardsList = () => {
   const [boards, setBoards] = useState<IBoardsListData[]>();
@@ -26,12 +27,15 @@ export const useBoardsList = () => {
         // 목록 전체 불러옴
         const data = await fetchBoards();
 
+        // 응답 데이터 검증
+        const responseData = FetchBoardsResponseSchema.parse(data);
+
         // 목록 객체 배열화
-        const boardArray = data
-          ? Object.keys(data).map((key, index) => ({
+        const boardArray = responseData
+          ? Object.keys(responseData).map((key, index) => ({
               id: key, // 고유 ID
               number: index + 1, // 글 번호를 index로 사용
-              ...data[key], // 데이터 내용
+              ...responseData[key], // 데이터 내용
             }))
           : [];
 
@@ -50,7 +54,11 @@ export const useBoardsList = () => {
 
   const onClickDelete = async (boardId: string) => {
     try {
-      await deleteBoard(boardId);
+      // 요청 데이터 검증
+      const requestId = DeleteBoardRequestSchema.parse({ boardId });
+
+      // 해당 게시글 삭제하기
+      await deleteBoard(requestId.boardId);
 
       alert('삭제되었습니다.');
 

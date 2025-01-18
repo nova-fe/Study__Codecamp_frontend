@@ -111,27 +111,35 @@ export default function BoardsDetail() {
           </article>
 
           <div className="flex justify-center gap-6">
-            <button className="btn-black btn-sm flex items-center gap-3">
-              <Image
-                className="h-auto w-[18px]"
-                src="/images/menu.png"
-                alt="목록으로"
-                width={0}
-                height={0}
-                sizes="100vw"
-              />
-              <span>목록으로</span>
+            <button className="btn-black btn-sm">
+              <Link href="/boards" className="flex items-center gap-3">
+                <Image
+                  className="h-auto w-[18px]"
+                  src="/images/menu.png"
+                  alt="목록으로"
+                  width={0}
+                  height={0}
+                  sizes="100vw"
+                />
+                목록으로
+              </Link>
             </button>
-            <button className="btn-black btn-sm flex items-center gap-3">
-              <Image
-                className="h-auto w-[15px]"
-                src="/images/pencil.png"
-                alt="수정하기"
-                width={0}
-                height={0}
-                sizes="100vw"
-              />
-              <Link href={`/boards/${boardId}/edit`}>수정하기</Link>
+            <button className="btn-black btn-sm">
+              <Link
+                href={`/boards/${boardId}/edit`}
+                className="flex items-center gap-3"
+              >
+                {' '}
+                <Image
+                  className="h-auto w-[15px]"
+                  src="/images/pencil.png"
+                  alt="수정하기"
+                  width={0}
+                  height={0}
+                  sizes="100vw"
+                />
+                수정하기
+              </Link>
             </button>
           </div>
         </main>

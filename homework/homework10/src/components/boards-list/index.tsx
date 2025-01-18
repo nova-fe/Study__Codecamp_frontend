@@ -35,7 +35,7 @@ export default function BoardsList() {
                   {board?.writer}
                 </div>
                 <div className="w-24 text-center text-base font-light text-gray-400">
-                  {formatDate(board?.createdAt)}
+                  {board?.date}
                 </div>
                 <button
                   onClick={() => onClickDelete(board?.id)}

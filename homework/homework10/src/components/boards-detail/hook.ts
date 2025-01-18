@@ -3,27 +3,34 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { fetchBoard } from '@/api';
-import { IBoardsDetailData } from './types';
+import {
+  FetchBoardRequestSchema,
+  FetchBoardResponse,
+  FetchBoardResponseSchema,
+} from '@/schemas';
 
 export const useBoardsDetail = () => {
   // URL에서 동적 파라미터 가져오기
-  const { boardId } = useParams() as { boardId: string };
-  const [data, setData] = useState<IBoardsDetailData>();
+  let { boardId } = useParams();
+  const [data, setData] = useState<FetchBoardResponse>();
 
   useEffect(() => {
     const loadBoard = async () => {
       try {
-        // Firebase Realtime Database에서 해당 게시글 불러오기
-        const data = await fetchBoard(boardId);
+        // 요청 데이터 검증
+        const requestId = FetchBoardRequestSchema.parse({ boardId });
+        // 해당 게시글 불러오기
+        const data = await fetchBoard(requestId.boardId);
+        // 응답 데이터 검증
+        const responseData = FetchBoardResponseSchema.parse(data);
 
-        setData(data);
+        setData(responseData);
       } catch (error) {
         console.error('게시글 조회 실패:', error);
       }
     };
 
-    // boardId 가 유효할 때만 loadBoard 호출
-    if (boardId) loadBoard();
+    loadBoard();
   }, [boardId]);
 
   return {
