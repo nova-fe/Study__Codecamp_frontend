@@ -38,26 +38,25 @@ export default function StaticRoutingMovedPage() {
     fetchPost();
   }, []);
 
-  const onClickAlert = e => {
-    // * 이벤트 버블링::
-    // 자식을 누르면 그 부모까지 전파가 되어서 눌림
-
-    // event.target => 내가 클릭한 태그, 예를들어 제목을 클릭했으면 제목 span 태그가 target이 됨
-    // alert(e.target.id + '님이 작성한 게시글입니다.');
-
-    // event.currentTarget => 내(span) 클릭이 버블링되면 부모의 onClick 이 실행됨
-    // => currentTarget은 해당 실행된 그 태그를 칭함
-    alert(e.currentTarget.id + '님이 작성한 게시글입니다.');
+  const onClickLike = e => {
+    e.preventDefault(); // 기본 이벤트(a 태그의 이동 등) 막기
+    alert('Like ± 1!');
   };
 
   return (
     <div>
       {data?.map(el => (
-        <div key={el.id} id={el.writer} onClick={onClickAlert}>
-          <span style={{ margin: '10px' }}>작성자: {el?.writer}</span>
-          <span style={{ margin: '10px' }}>제목: {el?.title}</span>
-          <span style={{ margin: '10px' }}>내용: {el?.contents}</span>
-        </div>
+        <a key={el.id} href="http://google.com">
+          <div id={el.writer}>
+            <span>
+              <input type="checkbox" />
+            </span>
+            <span style={{ margin: '10px' }}>작성자: {el?.writer}</span>
+            <span style={{ margin: '10px' }}>제목: {el?.title}</span>
+            <span style={{ margin: '10px' }}>내용: {el?.contents}</span>
+            <span onClick={onClickLike}>❤️</span>
+          </div>
+        </a>
       ))}
     </div>
   );
