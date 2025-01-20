@@ -21,47 +21,37 @@ export const BoardsSchema = z.object({
 /**
  * 게시판 목록 조회
  */
-// 게시판 목록 조회(GET) 응답: 스키마
+// 게시판 목록 조회 응답 스키마
 export const FetchBoardsResponseSchema = z.record(BoardsSchema);
-
-// 게시판 목록 조회(GET) 응답: 타입
+// 게시판 목록 조회 응답 타입
 export type FetchBoardsResponse = z.infer<typeof FetchBoardsResponseSchema>;
 
 /**
  * 게시글 등록 요청
  */
-// 게시글 등록(POST) 요청: 스키마
+// 게시글 등록 요청 스키마
 export const CreateBoardRequestSchema = BoardsSchema.extend({}); // BoardsSchema.extend({}) : BoardsSchema를 확장 (extend)하는 방식으로 공통된 부분을 재사용
-
-// 게시글 등록(POST) 응답: 스키마
-export const CreateBoardResponseSchema = z.object({
-  name: z.string(),
-});
-
-// 게시글 등록(POST) 요청: 타입
+// 게시글 등록 응답 스키마
+export const CreateBoardResponseSchema = z.object({ name: z.string() });
+// 게시글 등록 요청 타입
 export type CreateBoardRequest = z.infer<typeof CreateBoardRequestSchema>;
-
-// 게시글 등록(POST) 응답: 타입
+// 게시글 등록 응답 타입
 export type CreateBoardResponse = z.infer<typeof CreateBoardResponseSchema>;
 
 /**
  * 게시글 조회
  */
-// 게시글 조회(GET) 요청: 스키마
-export const FetchBoardRequestSchema = z.object({
-  boardId: z.string(),
-});
-
-// 게시글 조회(GET) 응답: 스키마
+// 게시글 조회 요청 스키마
+export const FetchBoardRequestSchema = z.object({ boardId: z.string() });
+// 게시글 조회 응답 스키마
 export const FetchBoardResponseSchema = BoardsSchema.extend({});
-
-// 게시글 조회(GET) 응답: 타입
+// 게시글 조회 응답 타입
 export type FetchBoardResponse = z.infer<typeof FetchBoardResponseSchema>;
 
 /**
  * 게시글 업데이트
  */
-// 게시글 업데이트(PATCH) 요청: 스키마
+// 게시글 업데이트 요청 스키마
 export const UpdateBoardRequestSchema = z.object({
   title: z.string(),
   contents: z.string(),
@@ -69,13 +59,13 @@ export const UpdateBoardRequestSchema = z.object({
   password: z.string(),
 });
 
-// 게시글 업데이트(PATCH) 요청: 타입
+// 게시글 업데이트 요청 타입
 export type UpdateBoardRequest = z.infer<typeof UpdateBoardRequestSchema>;
 
 /**
  * 게시글 삭제
  */
-// 게시글 삭제(DELETE) 요청: 스키마
+// 게시글 삭제 요청 스키마
 export const DeleteBoardRequestSchema = z.object({
   boardId: z.string(),
 });

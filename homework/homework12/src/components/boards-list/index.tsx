@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { useBoardsList } from './hook';
 
 export default function BoardsList() {
-  const { formatDate, onClickDelete, onClickLink, boards } = useBoardsList();
+  const { onClickDelete, onClickLink, boards } = useBoardsList();
 
   return (
     <>
@@ -19,14 +19,14 @@ export default function BoardsList() {
           <div className="grid gap-3">
             {boards?.map(board => (
               <div
-                className="group relative grid grid-cols-[auto_1fr_auto_auto] gap-2 rounded-lg border border-gray-100 px-6 py-3 cursor-pointer"
+                className="group relative grid cursor-pointer grid-cols-[auto_1fr_auto_auto] gap-2 rounded-lg border border-gray-100 px-6 py-3"
                 key={board?.id}
                 onClick={() => onClickLink(board?.id)}
               >
                 <div className="w-16 text-center text-sm font-light text-gray-400">
                   {board?.number}
                 </div>
-                <div className="text-base font-medium ">{board?.title}</div>
+                <div className="text-base font-medium">{board?.title}</div>
                 <div className="w-[6.5rem] text-center text-base font-light">
                   {board?.writer}
                 </div>
