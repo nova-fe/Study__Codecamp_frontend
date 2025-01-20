@@ -42,7 +42,7 @@ export const useCommentList = () => {
     };
 
     loadCommentList();
-  }, [commentListData]);
+  }, []);
 
   return { commentListData, formatDate };
 };
