@@ -3,7 +3,6 @@
 import Image from 'next/image';
 import { useCommentWrite } from './hook';
 import { Rating } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import StarRateRoundedIcon from '@mui/icons-material/StarRateRounded';
 
 export default function CommentWrite() {
@@ -12,23 +11,13 @@ export default function CommentWrite() {
     onChangePassword,
     onChangeContents,
     onClickPostComment,
+    onChangeRating,
     commentData,
     isActive,
     writerError,
     passwordError,
     errMessage,
   } = useCommentWrite();
-
-  const StyledRating = styled(Rating)({
-    '& .MuiRating-iconFilled': {
-      color: '#FADA67',
-    },
-  });
-
-  const changeRating = e => {
-    console.log(e.target.value);
-  };
-
   return (
     <div className="mt-6 border-t border-t-gray-200 pt-10">
       <div className="flex items-center gap-[10px]">
@@ -43,16 +32,22 @@ export default function CommentWrite() {
         <span className="font-semibold">댓글</span>
       </div>
       <div className="py-6">
-        <StyledRating
+        <Rating
           name="customized-color"
-          // 기본값
-          defaultValue={3}
           // 증가값
           precision={0.5}
+          value={commentData.rating}
+          classes={{
+            iconFilled: 'text-yellow-300', // 채워진 아이콘에 색상 적용
+            iconEmpty: 'text-gray-200' // 빈 아이콘에 색상 적용
+          }}
           // 아이콘 변경
           icon={<StarRateRoundedIcon fontSize="inherit" />}
           emptyIcon={<StarRateRoundedIcon fontSize="inherit" />}
-          onChange={changeRating}
+          onChange={(event, newValue) => {
+            // console.log(newValue);
+            onChangeRating(newValue);
+          }}
         />
       </div>
       <div className="mb-4 flex gap-4">

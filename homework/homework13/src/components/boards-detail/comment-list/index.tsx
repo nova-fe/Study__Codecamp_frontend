@@ -2,6 +2,8 @@
 
 import Image from 'next/image';
 import { useCommentList } from './hook';
+import { Rating } from '@mui/material';
+import StarRateRoundedIcon from '@mui/icons-material/StarRateRounded';
 
 export default function CommentList() {
   const { commentListData, formatDate } = useCommentList();
@@ -26,7 +28,18 @@ export default function CommentList() {
               <div className="mr-2 font-light text-gray-500">
                 {comment?.writer}
               </div>
-              <div>⭐⭐⭐⭐⭐</div>
+              <Rating
+                name="customized-color"
+                value={comment?.rating}
+                classes={{
+                  iconFilled: 'text-yellow-300', // 채워진 아이콘에 색상 적용
+                  iconEmpty: 'text-gray-200', // 빈 아이콘에 색상 적용
+                }}
+                // 아이콘 변경
+                icon={<StarRateRoundedIcon fontSize="inherit" />}
+                emptyIcon={<StarRateRoundedIcon fontSize="inherit" />}
+                readOnly={true}
+              />
             </div>
 
             <div className="absolute right-0 top-0 flex gap-2">

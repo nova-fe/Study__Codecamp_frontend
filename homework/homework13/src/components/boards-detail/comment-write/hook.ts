@@ -1,12 +1,12 @@
 'use client';
 
 import { createComment } from '@/api';
-import { CreateCommentResponseSchema } from '@/schemas';
+import { CreateCommentRequest, CreateCommentResponseSchema } from '@/schemas';
 import { ChangeEvent, useState, useEffect } from 'react';
 
 export const useCommentWrite = () => {
   // 데이터 state
-  const [commentData, setCommentData] = useState({
+  const [commentData, setCommentData] = useState<CreateCommentRequest>({
     writer: '',
     password: '',
     contents: '',
@@ -61,6 +61,21 @@ export const useCommentWrite = () => {
     setCommentData({
       ...commentData,
       contents: event.target.value,
+    });
+
+    // 모든 입력폼이 입력 되어있는지 확인
+    if (commentData.writer && commentData.password) {
+      return setIsActive(true);
+    }
+
+    // 입력이 되어있지 않다면 false
+    return setIsActive(false);
+  };
+
+  const onChangeRating = (value: number | null) => {
+    setCommentData({
+      ...commentData,
+      rating: value ?? 0, // value 가 null 이면 0으로 처리
     });
 
     // 모든 입력폼이 입력 되어있는지 확인
@@ -127,7 +142,6 @@ export const useCommentWrite = () => {
    */
   // (비동기 작업 후 화면 재렌더링)
   useEffect(() => {
-    console.log('데이터 변경');
     // isSubmitted 가 변경되면 실행
     // (화면이 재렌더링 됨 -> 변경된 commentData가 화면에 적용됨)
 
@@ -142,6 +156,7 @@ export const useCommentWrite = () => {
     onChangePassword,
     onChangeContents,
     onClickPostComment,
+    onChangeRating,
     commentData,
     isActive,
     writerError,
