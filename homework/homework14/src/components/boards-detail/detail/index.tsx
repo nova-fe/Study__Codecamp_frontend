@@ -98,8 +98,8 @@ export default function BoardsDetail() {
         </article>
 
         <div className="flex justify-center gap-6">
-          <button className="btn-black btn-sm">
-            <Link href="/boards" className="flex items-center gap-3">
+          <Link href="/boards">
+            <button className="btn-black btn-sm flex items-center gap-3">
               <Image
                 className="h-auto w-[18px]"
                 src="/images/menu.png"
@@ -109,14 +109,11 @@ export default function BoardsDetail() {
                 sizes="100vw"
               />
               목록으로
-            </Link>
-          </button>
-          <button className="btn-black btn-sm">
-            <Link
-              href={`/boards/${boardId}/edit`}
-              className="flex items-center gap-3"
-            >
-              {' '}
+            </button>
+          </Link>
+
+          <Link href={`/boards/${boardId}/edit`}>
+            <button className="btn-black btn-sm flex items-center gap-3">
               <Image
                 className="h-auto w-[15px]"
                 src="/images/pencil.png"
@@ -126,8 +123,8 @@ export default function BoardsDetail() {
                 sizes="100vw"
               />
               수정하기
-            </Link>
-          </button>
+            </button>
+          </Link>
         </div>
       </main>
     </div>

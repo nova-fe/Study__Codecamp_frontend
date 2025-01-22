@@ -16,6 +16,13 @@ export const BoardsSchema = z.object({
   createdAt: z.string(),
   password: z.string(),
   date: z.string(),
+  address: z
+    .object({
+      zipcode: z.string().optional(),
+      address: z.string().optional(),
+      addressDetail: z.string().optional(),
+    })
+    .optional(), // 주소는 선택사항
 });
 
 /**
@@ -57,6 +64,13 @@ export const UpdateBoardRequestSchema = z.object({
   contents: z.string(),
   writer: z.string(),
   password: z.string(),
+  address: z
+    .object({
+      zipcode: z.string().optional(),
+      address: z.string().optional(),
+      addressDetail: z.string().optional(),
+    })
+    .optional(), // 주소는 선택사항
 });
 
 // 게시글 업데이트 요청 타입

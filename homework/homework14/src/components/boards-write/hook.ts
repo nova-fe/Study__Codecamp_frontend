@@ -17,6 +17,11 @@ export const useBoardsWrite = () => {
   const [password, setPassword] = useState('');
   const [title, setTitle] = useState('');
   const [contents, setContents] = useState('');
+  const [address, setAddress] = useState({
+    zipcode: '',
+    address: '',
+    addressDetail: '',
+  });
 
   const [writerError, setWriterError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
@@ -26,8 +31,10 @@ export const useBoardsWrite = () => {
   const [isActive, setIsActive] = useState(false);
 
   // 얼럿
-  const [isAlertOpen, setIsAlertOpen] = useState(false);
-  const [isConfirm, setIsConfirm] = useState(false);
+  // const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [isConfirm, setIsConfirm] = useState(false); // 입력폼
+  const [isAddressAlertOpen, setIsAddressAlertOpen] = useState(false);
+  const [isPasswordAlertOpen, setIsPasswordAlertOpen] = useState(false);
 
   // 얼럿 메세지
   const [alertMessage, setAlertMessage] = useState('Message');
@@ -40,8 +47,17 @@ export const useBoardsWrite = () => {
   const errMessage = '필수입력 사항 입니다.';
 
   // 모달 열기/닫기 토글
-  const toggleAlertOpen = () => {
-    setIsAlertOpen(prev => !prev);
+  const toggleAlertOpen = (alertId: string) => {
+    if (alertId === 'passwordAlert') {
+      setIsPasswordAlertOpen(prev => !prev);
+      setIsAddressAlertOpen(false);
+    } else if (alertId === 'addressAlert') {
+      setIsAddressAlertOpen(prev => !prev);
+      setIsPasswordAlertOpen(false);
+    } else if (alertId === 'none') {
+      setIsAddressAlertOpen(false);
+      setIsPasswordAlertOpen(false);
+    }
   };
 
   // 날짜를 연-월-일 로 변환
@@ -65,6 +81,7 @@ export const useBoardsWrite = () => {
     contents,
     createdAt: dateStr, // ISO 8601 형식으로 날짜 저장
     date: dateFormatStr,
+    address,
   };
 
   const onChangeWriter = (event: ChangeEvent<HTMLInputElement>) => {
@@ -99,6 +116,23 @@ export const useBoardsWrite = () => {
     setIsActive(false);
   };
 
+  const onChangeAddressDetail = (event: ChangeEvent<HTMLInputElement>) => {
+    setAddress({
+      ...address,
+      addressDetail: event.target.value,
+    });
+  };
+
+  // 우편번호 모달
+  const handleComplete = (data: any) => {
+    setAddress({
+      ...address,
+      zipcode: data.zonecode || prevData?.address?.zipcode,
+      address: data.address || prevData?.address?.address,
+    });
+    toggleAlertOpen('addressAlert');
+  };
+
   /**
    * 게시글 등록
    */
@@ -121,7 +155,7 @@ export const useBoardsWrite = () => {
         const boardId = responseData.name; // Firebase가 반환하는 자동 생성된 ID
         router.push(`/boards/${boardId}`);
       } catch (error) {
-        toggleAlertOpen();
+        toggleAlertOpen('none');
         setAlertMessage(alertMessageList.error);
         console.error('게시글 작성 실패:', error);
       }
@@ -171,12 +205,12 @@ export const useBoardsWrite = () => {
       setCheckPasswordInput('');
     }
     setCheckPasswordInput('');
-    setIsAlertOpen(prev => !prev);
+    setIsPasswordAlertOpen(prev => !prev);
   };
 
   // 비밀번호 체크 모달 열기
   const onClickCheckPasswordOpen = () => {
-    toggleAlertOpen(); // 모달 열기
+    toggleAlertOpen('passwordAlert'); // 모달 열기
     setAlertMessage(alertMessageList.checkPassword);
 
     // isConfirm true로 바꾸기
@@ -191,6 +225,12 @@ export const useBoardsWrite = () => {
           ...prevData,
           title: title || prevData?.title,
           contents: contents || prevData?.contents,
+          address: {
+            zipcode: address.zipcode || prevData?.address?.zipcode,
+            address: address.address || prevData?.address?.address,
+            addressDetail:
+              address.addressDetail || prevData?.address?.addressDetail,
+          },
         };
         // 요청 데이터 검증
         const requestData = UpdateBoardRequestSchema.parse(updatedData);
@@ -200,7 +240,7 @@ export const useBoardsWrite = () => {
         // 게시글이 추가된 후, 해당 게시글의 ID로 이동
         router.push(`/boards/${boardId}`);
       } catch (error) {
-        toggleAlertOpen();
+        toggleAlertOpen('passwordAlert');
         setAlertMessage(alertMessageList.error);
         console.error('게시글 수정 실패:', error);
       }
@@ -210,7 +250,7 @@ export const useBoardsWrite = () => {
       setIsConfirm(false);
       setCheckPasswordInput('');
       // 업데이트 실패 얼럿
-      toggleAlertOpen();
+      toggleAlertOpen('passwordAlert');
       setAlertMessage(alertMessageList.falsePassword);
     }
   };
@@ -239,6 +279,7 @@ export const useBoardsWrite = () => {
     onChangePassword,
     onChangeContents,
     onChangeTitle,
+    onChangeAddressDetail,
     onClickPost,
     onClickUpdate,
     writerError,
@@ -251,10 +292,13 @@ export const useBoardsWrite = () => {
     prevData,
     toggleAlertOpen,
     alertMessage,
-    isAlertOpen,
     isConfirm,
     onChangeCheckPassword,
     onClickCheckPasswordOpen,
     onClickAlertClose,
+    isPasswordAlertOpen,
+    isAddressAlertOpen,
+    handleComplete,
+    address,
   };
 };

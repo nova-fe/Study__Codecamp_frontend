@@ -6,6 +6,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import DaumPostcodeEmbed from 'react-daum-postcode';
+import Link from 'next/link';
 
 export default function BoardsWrite(props: IBoardsWriteProps) {
   const {
@@ -13,6 +15,7 @@ export default function BoardsWrite(props: IBoardsWriteProps) {
     onChangePassword,
     onChangeContents,
     onChangeTitle,
+    onChangeAddressDetail,
     onClickPost,
     onClickUpdate,
     writerError,
@@ -21,16 +24,19 @@ export default function BoardsWrite(props: IBoardsWriteProps) {
     contentsError,
     isActive,
     errMessage,
+    boardId,
     prevData,
-    toggleAlertOpen,
     alertMessage,
-    isAlertOpen,
     isConfirm,
     onChangeCheckPassword,
     onClickCheckPasswordOpen,
     onClickAlertClose,
+    isPasswordAlertOpen,
+    toggleAlertOpen,
+    isAddressAlertOpen,
+    handleComplete,
+    address,
   } = useBoardsWrite();
-
   return (
     <>
       <div className="container mx-auto max-w-screen-xl py-10">
@@ -115,18 +121,45 @@ export default function BoardsWrite(props: IBoardsWriteProps) {
               <label className="label-text mb-2">주소</label>
               <div className="mb-2 flex">
                 <input
-                  className="input-primary mr-2 w-20"
-                  placeholder="01234"
+                  className="input-primary mr-2 w-24"
+                  placeholder="우편번호"
+                  value={address.zipcode || prevData?.address?.zipcode}
+                  readOnly
                 />
-                <button className="btn-black btn-md">우편번호 검색</button>
+                <button
+                  className="btn-black btn-md"
+                  onClick={() => toggleAlertOpen('addressAlert')}
+                >
+                  우편번호 검색
+                </button>
               </div>
               <input
                 className="input-primary mb-2"
                 placeholder="주소를 입력해 주세요."
+                value={address.address || prevData?.address?.address}
+                readOnly
               />
-              <input className="input-primary" placeholder="상세주소" />
+              <input
+                onChange={onChangeAddressDetail}
+                className="input-primary"
+                placeholder="상세주소"
+                defaultValue={prevData?.address?.addressDetail}
+              />
             </div>
           </div>
+          {/* 주소 얼럿 */}
+          {isAddressAlertOpen && (
+            <Dialog
+              open={true}
+              onClose={() => toggleAlertOpen('addressAlert')}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogContent>
+                <DaumPostcodeEmbed onComplete={handleComplete} {...props} />
+              </DialogContent>
+            </Dialog>
+          )}
 
           {/* 유튜브 링크 */}
           <div className="border-b border-b-gray-300 py-10">
@@ -159,7 +192,9 @@ export default function BoardsWrite(props: IBoardsWriteProps) {
 
           {/* 하단 버튼 */}
           <div className="flex justify-end gap-4">
-            <button className="btn-black btn-md">취소</button>
+            <Link href={props.isEdit ? `/boards/${boardId}` : '/boards'}>
+              <button className="btn-black btn-md">취소</button>
+            </Link>
             <button
               className={`${isActive || props.isEdit ? 'btn-primary' : 'btn-gray'} btn-md`}
               onClick={props.isEdit ? onClickCheckPasswordOpen : onClickPost}
@@ -169,10 +204,10 @@ export default function BoardsWrite(props: IBoardsWriteProps) {
           </div>
 
           {/* 얼럿 */}
-          {isAlertOpen && (
+          {isPasswordAlertOpen && (
             <Dialog
               open={true}
-              onClose={toggleAlertOpen}
+              onClose={() => toggleAlertOpen('passwordAlert')}
               aria-labelledby="alert-dialog-title"
               aria-describedby="alert-dialog-description"
             >
