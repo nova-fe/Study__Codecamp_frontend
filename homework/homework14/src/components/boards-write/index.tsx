@@ -26,6 +26,9 @@ export default function BoardsWrite(props: IBoardsWriteProps) {
     alertMessage,
     isAlertOpen,
     isConfirm,
+    onChangeCheckPassword,
+    onClickCheckPasswordOpen,
+    onClickAlertClose,
   } = useBoardsWrite();
 
   return (
@@ -159,7 +162,7 @@ export default function BoardsWrite(props: IBoardsWriteProps) {
             <button className="btn-black btn-md">취소</button>
             <button
               className={`${isActive || props.isEdit ? 'btn-primary' : 'btn-gray'} btn-md`}
-              onClick={props.isEdit ? onClickUpdate : onClickPost}
+              onClick={props.isEdit ? onClickCheckPasswordOpen : onClickPost}
             >
               {props.isEdit ? '수정' : '등록'} 하기
             </button>
@@ -177,26 +180,23 @@ export default function BoardsWrite(props: IBoardsWriteProps) {
                 <DialogContentText id="alert-dialog-description">
                   {alertMessage}
                 </DialogContentText>
-                {!isConfirm && (
+                {isConfirm && (
                   <TextField
                     autoFocus
                     required
                     margin="dense"
                     type="password"
                     fullWidth
-                    value={}
-                    onChange={}
+                    defaultValue=""
+                    onChange={onChangeCheckPassword}
                   />
                 )}
               </DialogContent>
               <DialogActions>
-                <Button
-                  variant="contained"
-                  disableElevation
-                  onClick={toggleAlertOpen}
-                >
-                  확인
+                <Button onClick={() => onClickAlertClose(null, 'customClose')}>
+                  닫기
                 </Button>
+                {isConfirm && <Button onClick={onClickUpdate}>확인</Button>}
               </DialogActions>
             </Dialog>
           )}
