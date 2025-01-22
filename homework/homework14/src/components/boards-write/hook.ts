@@ -231,13 +231,13 @@ export const useBoardsWrite = () => {
           ...prevData,
           title: title || prevData?.title,
           contents: contents || prevData?.contents,
-          youtubeUrl: youtubeUrl || prevData?.youtubeUrl,
+          // 빈 값('')도 저장되도록 하기 위해 Nullish  연산자 사용
+          youtubeUrl: youtubeUrl ?? prevData?.youtubeUrl,
           address: {
             // zipcode 나 address 는 빈 값이 없으므로 논리 연산자(||) 사용
             zipcode: address.zipcode || prevData?.address?.zipcode,
             address: address.address || prevData?.address?.address,
             addressDetail:
-              // 빈 값('')은 저장되도록 하기 위해 Nullish  연산자 사용
               address.addressDetail ?? prevData?.address?.addressDetail,
           },
         };
