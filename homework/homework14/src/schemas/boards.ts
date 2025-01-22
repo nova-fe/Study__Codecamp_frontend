@@ -16,6 +16,7 @@ export const BoardsSchema = z.object({
   createdAt: z.string(),
   password: z.string(),
   date: z.string(),
+  youtubeUrl: z.string().optional(),
   address: z
     .object({
       zipcode: z.string().optional(),
@@ -64,6 +65,7 @@ export const UpdateBoardRequestSchema = z.object({
   contents: z.string(),
   writer: z.string(),
   password: z.string(),
+  youtubeUrl: z.string().optional(),
   address: z
     .object({
       zipcode: z.string().optional(),

@@ -22,6 +22,7 @@ export const useBoardsWrite = () => {
     address: '',
     addressDetail: '',
   });
+  const [youtubeUrl, setYoutubeUrl] = useState('');
 
   const [writerError, setWriterError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
@@ -82,6 +83,7 @@ export const useBoardsWrite = () => {
     createdAt: dateStr, // ISO 8601 형식으로 날짜 저장
     date: dateFormatStr,
     address,
+    youtubeUrl,
   };
 
   const onChangeWriter = (event: ChangeEvent<HTMLInputElement>) => {
@@ -121,6 +123,10 @@ export const useBoardsWrite = () => {
       ...address,
       addressDetail: event.target.value,
     });
+  };
+
+  const onChangeYoutubeUrl = (event: ChangeEvent<HTMLInputElement>) => {
+    setYoutubeUrl(event.target.value);
   };
 
   // 우편번호 모달
@@ -225,6 +231,7 @@ export const useBoardsWrite = () => {
           ...prevData,
           title: title || prevData?.title,
           contents: contents || prevData?.contents,
+          youtubeUrl: youtubeUrl || prevData?.youtubeUrl,
           address: {
             // zipcode 나 address 는 빈 값이 없으므로 논리 연산자(||) 사용
             zipcode: address.zipcode || prevData?.address?.zipcode,
@@ -282,6 +289,7 @@ export const useBoardsWrite = () => {
     onChangeContents,
     onChangeTitle,
     onChangeAddressDetail,
+    onChangeYoutubeUrl,
     onClickPost,
     onClickUpdate,
     writerError,

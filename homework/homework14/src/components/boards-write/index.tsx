@@ -16,6 +16,7 @@ export default function BoardsWrite(props: IBoardsWriteProps) {
     onChangeContents,
     onChangeTitle,
     onChangeAddressDetail,
+    onChangeYoutubeUrl,
     onClickPost,
     onClickUpdate,
     writerError,
@@ -168,6 +169,8 @@ export default function BoardsWrite(props: IBoardsWriteProps) {
               <input
                 className="input-primary"
                 placeholder="제목을 입력해 주세요."
+                onChange={onChangeYoutubeUrl}
+                defaultValue={prevData?.youtubeUrl}
               />
             </div>
           </div>

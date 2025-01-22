@@ -4,9 +4,10 @@ import { useBoardsDetail } from './hook';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import HeartBrokenOutlinedIcon from '@mui/icons-material/HeartBrokenOutlined';
 import Tooltip from '@mui/material/Tooltip';
+import YouTube, { YouTubeProps } from 'react-youtube';
 
 export default function BoardsDetail() {
-  const { data, boardId } = useBoardsDetail();
+  const { data, boardId, getYoutubeIdFromUrl } = useBoardsDetail();
 
   return (
     <div>
@@ -87,16 +88,23 @@ export default function BoardsDetail() {
             </div>
 
             {/* 유튜브 */}
-            <div className="mt-6 flex justify-center bg-gray-100 py-6">
-              <Image
-                className="w-[822px]"
-                src="/images/d1.png"
-                alt="img"
-                width={0}
-                height={0}
-                sizes="100vw"
-              />
-            </div>
+            {data?.youtubeUrl && (
+              <div className="mt-6 flex justify-center bg-gray-100 py-6">
+                <div className="w-full max-w-[1000px]">
+                  <div className="relative w-full pt-[56.25%]">
+                    <YouTube
+                      videoId={getYoutubeIdFromUrl(data?.youtubeUrl)}
+                      opts={{
+                        width: '100%',
+                        height: '100%',
+                      }}
+                      className="absolute left-0 top-0 h-full w-full"
+                      w-full
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* 좋아요 */}
             <div className="mt-6 flex justify-center gap-6">
