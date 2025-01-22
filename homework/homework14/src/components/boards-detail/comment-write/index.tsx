@@ -108,7 +108,7 @@ export default function CommentWrite() {
         >
           댓글 등록
         </button>
-        <button onClick={toggleAlertOpen}>TEST</button>
+
         {/* 댓글 등록 얼럿 */}
         {isAlertOpen && (
           <Dialog

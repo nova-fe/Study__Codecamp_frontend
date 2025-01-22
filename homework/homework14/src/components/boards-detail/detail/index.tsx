@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useBoardsDetail } from './hook';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import HeartBrokenOutlinedIcon from '@mui/icons-material/HeartBrokenOutlined';
+import Tooltip from '@mui/material/Tooltip';
 
 export default function BoardsDetail() {
   const { data, boardId } = useBoardsDetail();
@@ -35,6 +36,7 @@ export default function BoardsDetail() {
 
           {/* 콘텐츠 */}
           <div className="pb-10 pt-4">
+            {/* 상단 우측 아이콘 */}
             <div className="mb-6 flex justify-end gap-2">
               <button>
                 <Image
@@ -46,16 +48,29 @@ export default function BoardsDetail() {
                   sizes="100vw"
                 />
               </button>
-              <button>
-                <Image
-                  className="h-auto w-6"
-                  src="/images/map.png"
-                  alt="map"
-                  width={0}
-                  height={0}
-                  sizes="100vw"
-                />
-              </button>
+              {data?.address && (
+                <Tooltip
+                  title={
+                    data?.address?.address + ' ' + data?.address?.addressDetail
+                  }
+                  className="cursor-pointer"
+                  sx={{
+                    '& .MuiTooltip-tooltip': {
+                      backgroundColor: 'white',
+                      color: 'black',
+                    },
+                  }}
+                >
+                  <Image
+                    className="h-auto w-6"
+                    src="/images/map.png"
+                    alt="map"
+                    width={0}
+                    height={0}
+                    sizes="100vw"
+                  />
+                </Tooltip>
+              )}
             </div>
 
             {/* 내용 */}
