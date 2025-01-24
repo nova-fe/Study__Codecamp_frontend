@@ -2,6 +2,7 @@
 // import { Geist, Geist_Mono } from "next/font/google";
 import localFont from 'next/font/local';
 import './globals.css';
+import Layout from '@/commons/layout';
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -39,7 +40,7 @@ export default function RootLayout({ children }: IProps) {
     <html lang="en">
       <body className={`${철수의폰트.variable} ${글로벌폰트.variable}`}>
         <div>============== 여기 위는 레이아웃 입니다 ==============</div>
-        {children}
+        <Layout>{children}</Layout>
         <div>============== 여기 아래는 레이아웃 입니다 ==============</div>
       </body>
     </html>
