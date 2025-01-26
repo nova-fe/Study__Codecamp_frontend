@@ -1,20 +1,23 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-export default function Navigation() {
+export default function LayoutNavigation() {
   return (
     <>
       <div className="container mx-auto max-w-screen-xl py-6">
         <div className="flex justify-between">
           <div className="flex items-center">
-            <Image
-              className="h-[31px] w-[51px] mr-7"
-              src="/images/logo.png"
-              alt="로고"
-              width={0}
-              height={0}
-              sizes="100vw"
-            />
+            <Link href="/boards">
+              <Image
+                className="h-[31px] w-[51px] mr-7"
+                src="/images/logo.png"
+                alt="로고"
+                width={0}
+                height={0}
+                sizes="100vw"
+              />
+            </Link>
+
             <nav>
               <ul className="flex gap-4 items-center">
                 <li className="p-2 shadow-[inset_0_-3px_0_0_#000000]">

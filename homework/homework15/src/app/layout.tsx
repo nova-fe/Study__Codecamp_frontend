@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 // import { Geist, Geist_Mono } from "next/font/google";
 import localFont from 'next/font/local';
 import './globals.css';
+import Layout from '@/commons/layout';
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -24,14 +25,16 @@ export const metadata: Metadata = {
   description: 'homework 05',
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
+interface IProps {
   children: React.ReactNode;
-}>) {
+}
+
+export default function RootLayout({ children }: IProps) {
   return (
-    <html lang="en">
-      <body className={`${pretendard.variable} antialiased`}>{children}</body>
+    <html lang="ko">
+      <body className={`${pretendard.variable} antialiased`}>
+        <Layout>{children}</Layout>
+      </body>
     </html>
   );
 }
