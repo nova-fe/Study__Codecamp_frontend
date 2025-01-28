@@ -1,5 +1,5 @@
 'use client';
-import { fetchAllKeys, fetchPostsByKey } from '@/api/board';
+import { fetchAllKeys, fetchPostsByKey } from '@/api/boards';
 import { useEffect, useState } from 'react';
 
 export default function StaticRoutingMovedPage() {
