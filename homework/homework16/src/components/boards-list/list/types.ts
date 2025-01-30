@@ -1,9 +1,21 @@
-export interface IBoardsListData {
-  id: string;
-  number: number;
-  writer: string;
-  title: string;
-  date: string;
-  createdAt: string;
-  password: string;
+export interface IBoardsListProps {
+  data: {
+    id: string;
+    contents: string;
+    writer: string;
+    title: string;
+    createdAt: string;
+    password: string;
+    date: string;
+    youtubeUrl?: string;
+    number: number;
+    address?:
+      | {
+          zipcode?: string | undefined;
+          address?: string | undefined;
+          addressDetail?: string | undefined;
+        }
+      | undefined;
+  }[];
+  onClickDelete: (boardId: string) => void;
 }

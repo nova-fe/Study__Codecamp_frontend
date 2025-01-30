@@ -38,19 +38,37 @@ export type FetchBoardsResponse = z.infer<typeof FetchBoardsResponseSchema>;
  * 게시글 key 목록 조회
  */
 // key 목록 조회 응답 스키마
-export const FetchBoardsKeysResponseSchema = z.array(z.string());
+export const FetchBoardsKeyResponseSchema = z.array(z.string());
 // key 목록 조회 응답 타입
-export type FetchBoardsKeysResponse = z.infer<typeof FetchBoardsKeysResponseSchema>;
+export type FetchBoardsKeyResponse = z.infer<typeof FetchBoardsKeyResponseSchema>;
+
+/**
+ * 게시글 key와 limit에 따라 제한된 갯수의 데이터 가져오기(페이징)
+ */
+// 게시글 목록 제한 조회 요청 스키마
+export const FetchBoardsByKeyRequestSchema = z.object({ startKey: z.string(), limit: z.number() });
+// 게시글 목록 제한 조회 요청 타입
+export type FetchBoardsByKeyRequest = z.infer<typeof FetchBoardsByKeyRequestSchema>;
+// 게시글 목록 제한 조회 응답 스키마
+export const FetchBoardsByKeyResponseSchema = z.record(BoardsSchema);
+// 게시글 목록 제한 조회 응답 타입
+export type FetchBoardsByKeyResponse = z.infer<typeof FetchBoardsByKeyResponseSchema>;
+// 게시글 목록 제한 조회 배열화 스키마
+export const FetchBoardsByKeyArraySchema = z.array(
+  z.object({ id: z.string(), number: z.number(), ...BoardsSchema.shape }),
+);
+// 게시글 목록 제한 조회 배열화 타입
+export type FetchBoardsByKeyArray = z.infer<typeof FetchBoardsByKeyArraySchema>;
 
 /**
  * 게시글 등록 요청
  */
 // 게시글 등록 요청 스키마
 export const CreateBoardRequestSchema = BoardsSchema.extend({}); // BoardsSchema.extend({}) : BoardsSchema를 확장 (extend)하는 방식으로 공통된 부분을 재사용
-// 게시글 등록 응답 스키마
-export const CreateBoardResponseSchema = z.object({ name: z.string() });
 // 게시글 등록 요청 타입
 export type CreateBoardRequest = z.infer<typeof CreateBoardRequestSchema>;
+// 게시글 등록 응답 스키마
+export const CreateBoardResponseSchema = z.object({ name: z.string() });
 // 게시글 등록 응답 타입
 export type CreateBoardResponse = z.infer<typeof CreateBoardResponseSchema>;
 
@@ -58,7 +76,7 @@ export type CreateBoardResponse = z.infer<typeof CreateBoardResponseSchema>;
  * 게시글 조회
  */
 // 게시글 조회 요청 스키마
-export const FetchBoardRequestSchema = z.object({ boardId: z.string() });
+export const FetchBoardRequestSchema = z.string();
 // 게시글 조회 응답 스키마
 export const FetchBoardResponseSchema = BoardsSchema.extend({});
 // 게시글 조회 응답 타입
@@ -82,7 +100,6 @@ export const UpdateBoardRequestSchema = z.object({
     })
     .optional(), // 주소는 선택사항
 });
-
 // 게시글 업데이트 요청 타입
 export type UpdateBoardRequest = z.infer<typeof UpdateBoardRequestSchema>;
 
