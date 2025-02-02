@@ -3,7 +3,12 @@
 import { useEffect, useState } from 'react';
 import { IPaginationProps } from './type';
 
-export const usePagination = ({ keyList, setCurrentPage, limitPage }: IPaginationProps) => {
+export const usePagination = ({
+  keyList,
+  currentPage,
+  setCurrentPage,
+  limitPage,
+}: IPaginationProps) => {
   const [currentPageGroup, setCurrentPageGroup] = useState(0);
   const pagesLimitGroup = 5; // 한 그룹에 보여질  페이지 버튼 수
 
@@ -18,23 +23,23 @@ export const usePagination = ({ keyList, setCurrentPage, limitPage }: IPaginatio
   // 숫자 이동
   const onClickPageChante = (page: number) => {
     setCurrentPage(page);
-  }
+  };
 
   // 이전 페이지 이동
   const onClickPrevPage = () => {
     if (currentPageGroup > 0) setCurrentPageGroup(prev => prev - 1);
-  }
+  };
 
   useEffect(() => {
     setCurrentPage(startPage);
-  }, [currentPageGroup])
+  }, [currentPageGroup]);
 
   // 다음 페이지 이동
   const onClickNextPage = () => {
     if (currentPageGroup < totalGroups - 1) {
-      setCurrentPageGroup(prev => prev + 1)
-    };
-  }
+      setCurrentPageGroup(prev => prev + 1);
+    }
+  };
 
   return {
     startPage,
@@ -43,6 +48,6 @@ export const usePagination = ({ keyList, setCurrentPage, limitPage }: IPaginatio
     totalGroups,
     onClickPageChante,
     onClickPrevPage,
-    onClickNextPage
+    onClickNextPage,
   };
-}
+};

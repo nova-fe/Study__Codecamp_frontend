@@ -12,13 +12,13 @@ export default function Pagination({ keyList, currentPage, setCurrentPage, limit
     onClickPageChante,
     onClickPrevPage,
     onClickNextPage
-  } = usePagination({ keyList, setCurrentPage, limitPage });
+  } = usePagination({ keyList, currentPage, setCurrentPage, limitPage });
 
   // 다음 페이지 이동
 
   return (
     <div className="flex justify-center gap-2 my-2 items-center">
-      <KeyboardArrowLeftRounded className={`${startPage === 1 ? "text-gray-400" : "text-gray-800"} cursor-pointer`}  onClick={onClickPrevPage} />
+      <KeyboardArrowLeftRounded className={`${startPage === 1 ? "hidden" : "text-gray-800"} cursor-pointer`} onClick={onClickPrevPage} />
       <div className='flex items-center gap-1'>
         {
           Array.from({ length: endPage - startPage + 1 }, (_, index) => (
@@ -28,7 +28,7 @@ export default function Pagination({ keyList, currentPage, setCurrentPage, limit
           ))
         }
       </div>
-      <KeyboardArrowRightRounded className={`${currentPageGroup < totalGroups - 1 ? "text-gray-800" : "text-gray-400"} cursor-pointer`} onClick={onClickNextPage} />
+      <KeyboardArrowRightRounded className={`${currentPageGroup < totalGroups - 1 ? "text-gray-800" : "hidden"} cursor-pointer`} onClick={onClickNextPage} />
     </div>
   )
 }

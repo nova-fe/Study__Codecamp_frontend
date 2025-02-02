@@ -8,7 +8,6 @@ export interface IBoardsListProps {
     password: string;
     date: string;
     youtubeUrl?: string;
-    number: number;
     address?:
       | {
           zipcode?: string | undefined;
@@ -18,4 +17,6 @@ export interface IBoardsListProps {
       | undefined;
   }[];
   onClickDelete: (boardId: string) => void;
+  currentPage: number;
+  limitPage: number;
 }

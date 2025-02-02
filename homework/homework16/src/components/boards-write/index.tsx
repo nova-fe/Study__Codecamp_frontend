@@ -55,7 +55,7 @@ export default function BoardsWrite(props: IBoardsWriteProps) {
                 className="input-primary"
                 placeholder="작성자 명을 입력해 주세요."
                 onChange={onChangeWriter}
-                defaultValue={prevData?.writer}
+                value={prevData?.writer}
                 disabled={props.isEdit ? true : false}
               />
               {writerError && (
@@ -71,7 +71,7 @@ export default function BoardsWrite(props: IBoardsWriteProps) {
                 className="input-primary"
                 placeholder="비밀번호를 입력해 주세요."
                 onChange={onChangePassword}
-                defaultValue={prevData?.password}
+                value={prevData?.password}
                 disabled={props.isEdit ? true : false}
               />
               {passwordError && (
@@ -90,7 +90,7 @@ export default function BoardsWrite(props: IBoardsWriteProps) {
                 className="input-primary"
                 placeholder="제목을 입력해 주세요."
                 onChange={onChangeTitle}
-                defaultValue={prevData?.title}
+                value={prevData?.title}
               />
               {titleError && (
                 <div className="mt-2 text-red-500">{errMessage}</div>
@@ -108,7 +108,7 @@ export default function BoardsWrite(props: IBoardsWriteProps) {
                 className="input-primary h-[22rem] resize-none"
                 placeholder="내용을 입력해 주세요."
                 onChange={onChangeContents}
-                defaultValue={prevData?.contents}
+                value={prevData?.contents}
               ></textarea>
               {contentsError && (
                 <div className="mt-2 text-red-500">{errMessage}</div>
@@ -144,7 +144,7 @@ export default function BoardsWrite(props: IBoardsWriteProps) {
                 onChange={onChangeAddressDetail}
                 className="input-primary"
                 placeholder="상세주소"
-                defaultValue={prevData?.address?.addressDetail}
+                value={prevData?.address?.addressDetail}
               />
             </div>
           </div>
@@ -170,7 +170,7 @@ export default function BoardsWrite(props: IBoardsWriteProps) {
                 className="input-primary"
                 placeholder="제목을 입력해 주세요."
                 onChange={onChangeYoutubeUrl}
-                defaultValue={prevData?.youtubeUrl}
+                value={prevData?.youtubeUrl}
               />
             </div>
           </div>
@@ -225,7 +225,7 @@ export default function BoardsWrite(props: IBoardsWriteProps) {
                     margin="dense"
                     type="password"
                     fullWidth
-                    defaultValue=""
+                    value=""
                     onChange={onChangeCheckPassword}
                   />
                 )}

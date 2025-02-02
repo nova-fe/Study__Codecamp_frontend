@@ -55,7 +55,7 @@ export const FetchBoardsByKeyResponseSchema = z.record(BoardsSchema);
 export type FetchBoardsByKeyResponse = z.infer<typeof FetchBoardsByKeyResponseSchema>;
 // 게시글 목록 제한 조회 배열화 스키마
 export const FetchBoardsByKeyArraySchema = z.array(
-  z.object({ id: z.string(), number: z.number(), ...BoardsSchema.shape }),
+  z.object({ id: z.string(), ...BoardsSchema.shape }),
 );
 // 게시글 목록 제한 조회 배열화 타입
 export type FetchBoardsByKeyArray = z.infer<typeof FetchBoardsByKeyArraySchema>;
