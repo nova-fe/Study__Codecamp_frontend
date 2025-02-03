@@ -7,7 +7,7 @@ import {
   FetchBoardResponse,
   UpdateBoardRequestSchema,
 } from '@/schemas';
-import { IBoardIdParams } from './types';
+import { IBoardIdParams, IUpdateBoardRequst } from './types';
 
 export const useBoardsWrite = () => {
   const router = useRouter();
@@ -23,6 +23,8 @@ export const useBoardsWrite = () => {
     addressDetail: '',
   });
   const [youtubeUrl, setYoutubeUrl] = useState('');
+  // 기존 게시글 내용 가져오기
+  const [prevData, setPrevData] = useState<FetchBoardResponse>();
 
   const [writerError, setWriterError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
@@ -241,8 +243,10 @@ export const useBoardsWrite = () => {
               address.addressDetail ?? prevData?.address?.addressDetail,
           },
         };
+
         // 요청 데이터 검증
-        const requestData = UpdateBoardRequestSchema.parse(updatedData);
+        const requestData:IUpdateBoardRequst = updatedData;
+
         // 게시글 업데이트
         await updateBoard(boardId, requestData);
 
@@ -264,8 +268,6 @@ export const useBoardsWrite = () => {
     }
   };
 
-  // 기존 게시글 내용 가져오기
-  const [prevData, setPrevData] = useState<FetchBoardResponse>();
 
   useEffect(() => {
     const loadBoard = async () => {

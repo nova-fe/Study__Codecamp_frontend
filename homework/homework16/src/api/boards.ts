@@ -19,6 +19,7 @@ import {
   UpdateBoardRequest,
   UpdateBoardRequestSchema,
 } from '../schemas/boards';
+import { IUpdateBoardRequst } from './types';
 
 const BASE_URL = 'https://nova-codecamp-board-default-rtdb.firebaseio.com';
 
@@ -86,6 +87,7 @@ export const fetchBoard = async (boardId: string | string[]): Promise<FetchBoard
   // 요청 데이터 검증
   FetchBoardRequestSchema.parse(boardId);
   const response = await axios.get(`${BASE_URL}/homework/${boardId}.json`);
+
   const data = response.data;
   // 응답 데이터 검증
   FetchBoardResponseSchema.parse(data);
@@ -96,9 +98,9 @@ export const fetchBoard = async (boardId: string | string[]): Promise<FetchBoard
 /**
  * 게시글 수정(업데이트)
  */
-export const updateBoard = async (boardId: string, updatedData: UpdateBoardRequest) => {
+export const updateBoard = async (boardId: string, updatedData: IUpdateBoardRequst) => {
   // 요청 데이터 검증
-  UpdateBoardRequestSchema.parse({ boardId, updatedData });
+  UpdateBoardRequestSchema.parse({boardId, updatedData});
   await axios.patch(`${BASE_URL}/homework/${boardId}.json`, updatedData);
 };
 

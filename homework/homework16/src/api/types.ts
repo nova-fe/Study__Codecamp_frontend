@@ -11,4 +11,12 @@ export interface IUpdateBoardRequst {
   contents: string;
   writer: string;
   password: string;
+  youtubeUrl?: string;
+  address?:
+  | {
+      zipcode?: string | undefined;
+      address?: string | undefined;
+      addressDetail?: string | undefined;
+    }
+  | undefined;
 }

@@ -48,7 +48,6 @@ export default function BoardsListPage() {
     }
 
     loadKeys();
-    console.log(currentPage)
   }, []);
 
   /**

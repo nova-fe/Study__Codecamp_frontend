@@ -87,18 +87,21 @@ export type FetchBoardResponse = z.infer<typeof FetchBoardResponseSchema>;
  */
 // 게시글 업데이트 요청 스키마
 export const UpdateBoardRequestSchema = z.object({
-  title: z.string(),
-  contents: z.string(),
-  writer: z.string(),
-  password: z.string(),
-  youtubeUrl: z.string().optional(),
-  address: z
-    .object({
-      zipcode: z.string().optional(),
-      address: z.string().optional(),
-      addressDetail: z.string().optional(),
-    })
-    .optional(), // 주소는 선택사항
+  boardId: z.string(),
+  updatedData: z.object({
+    title: z.string(),
+    contents: z.string(),
+    writer: z.string(),
+    password: z.string(),
+    youtubeUrl: z.string().optional(),
+    address: z
+      .object({
+        zipcode: z.string().optional(),
+        address: z.string().optional(),
+        addressDetail: z.string().optional(),
+      })
+      .optional(), // 주소는 선택사항
+  }),
 });
 // 게시글 업데이트 요청 타입
 export type UpdateBoardRequest = z.infer<typeof UpdateBoardRequestSchema>;
