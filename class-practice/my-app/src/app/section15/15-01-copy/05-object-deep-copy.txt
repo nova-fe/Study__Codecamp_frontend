@@ -1,0 +1,35 @@
+ const profile = {
+    name: "철수",
+    age: 12,
+    school: "다람쥐초등학교",
+    hobby: {
+        hobby1: "축구하기",
+        hobby2: "수영하기"
+    }
+}
+
+
+const profile2 = JSON.parse(JSON.stringify(profile)); => 시간이 오래 걸리는 경우도 있기때문에 그럴 경우 Lodash 라이브러리 사용(npm)
+
+profile2
+{name: '철수', age: 12, school: '다람쥐초등학교', hobby: {…}}
+age
+: 
+12
+hobby
+: 
+hobby1
+: 
+"축구하기"
+hobby2
+: 
+"수영하기"
+name
+: 
+"철수"
+school
+: 
+"다람쥐초등학교"
+
+
+Object.freeze(profile) => 객체가 얼어버림(수정 불가) 

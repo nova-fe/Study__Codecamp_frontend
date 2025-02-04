@@ -1,0 +1,30 @@
+const profile = {
+    name: "철수",
+    age: 12,
+    school: "다람쥐초등학교"
+    hobby: {
+        hobby1: "축구하기",
+        hobby2: "수영하기"
+    }
+}
+
+const profile = {
+    name: "철수",
+    age: 12,
+    school: "다람쥐초등학교",
+    hobby: {
+        hobby1: "축구하기",
+        hobby2: "수영하기"
+    }
+}
+
+
+const profile2 = {...profile}
+
+profile2.hobby.hobby1 = "음악하기"
+
+profile2
+{name: '철수', age: 12, school: '다람쥐초등학교', hobby: {hobby1: "음악하기", hobby2: "수영하기"}}
+
+profile
+{name: '철수', age: 12, school: '다람쥐초등학교', hobby: {hobby1: "음악하기", hobby2: "수영하기"}}
