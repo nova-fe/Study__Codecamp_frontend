@@ -29,3 +29,20 @@ export type CreateCommentResponse = z.infer<typeof CreateCommentResponseSchema>;
 export const FetchCommentResponseSchema = z.record(CommentSchema);
 // 댓글 목록 조회 응답 타입
 export type FetchCommentResponse = z.infer<typeof FetchCommentResponseSchema>;
+
+/**
+ * 특정 시작 key와 limit에 따라 댓글 가져오기
+ */
+// 특정 댓글 목록 조회 요청 스키마
+export const FetchCommentByKeyRequestSchema = z.object({
+  startKey: z.string(),
+  limit: z.number(),
+});
+// 특정 댓글 목록 조회 요청 타입
+export type FetchCommentByKeyRequest = z.infer<typeof FetchCommentByKeyRequestSchema>;
+// 특정 댓글 목록 조회 응답 스키마
+export const FetchCommentByKeyResponseSchema = z.array(
+  z.object({id: z.string(), ...CommentSchema.shape})
+);
+// 특정 댓글 목록 조회 응답 타입
+export type FetchCommentByKeyResponse = z.infer<typeof FetchCommentByKeyResponseSchema>;
