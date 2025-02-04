@@ -42,7 +42,12 @@ export const fetchPostsByKey = async (startKey: string, limit: number) => {
   // 요청 데이터 검증
   FetchPostsByKeyRequestSchema.parse({ startKey, limit });
 
-  const url = `${BASE_URL}/class-practice.json?orderBy="$key"&startAt="${startKey}"&limitToFirst=${limit}`;
+  let url = `${BASE_URL}/class-practice.json?orderBy="$key"&limitToFirst=${limit}`;
+
+  if(startKey) {
+    url += `&startAfter="${startKey}"`
+  }
+
   const response = await axios.get(url);
   const data = response.data;
 
