@@ -17,7 +17,7 @@ export const useCommentWrite = () => {
   // 에러 상태
   const [writerError, setWriterError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
-  // const alertMessage = '필수입력 사항 입니다'; // 에러 메세지
+  const [contentsError, setContentsError] = useState(false);
 
   // 활성 상태
   const [isActive, setIsActive] = useState(false);
@@ -27,17 +27,28 @@ export const useCommentWrite = () => {
 
   // 얼럿
   const [isAlertOpen, setIsAlertOpen] = useState(false);
-  const toggleAlertOpen = () => {
-    setIsAlertOpen(prev => !prev);
-  };
+  const [isPasswordAlertOpen, setIsPasswordAlertOpen] = useState(false);
 
   // 얼럿 메세지
+  const [alertMessage, setAlertMessage] = useState('Message');
   const alertMessageList = {
     required: '필수입력 사항 입니다',
     error: '에러가 발생하였습니다.',
     success: '댓글이 등록되었습니다.',
+    falsePassword: '비밀번호를 확인해주세요.',
+    checkPassword: '글을 작성할 때 입력하셨던 비밀번호를 입력해주세요.',
   };
-  const [alertMessage, setAlertMessage] = useState('Message');
+
+  // 모달 열기/닫기 토글
+  const toggleAlertOpen = (alertId: string) => {
+    if (alertId === 'successAlert') {
+      setIsAlertOpen(prev => !prev);
+      setIsPasswordAlertOpen(false);
+    } else if (alertId === 'passwordAlert') {
+      setIsAlertOpen(false);
+      setIsPasswordAlertOpen(prev => !prev);
+    }
+  };
 
   /**
    * 입력폼 onChange
@@ -49,7 +60,7 @@ export const useCommentWrite = () => {
     });
 
     // 모든 입력폼이 입력 되어있는지 확인
-    if (event.target.value && commentData.password) {
+    if (event.target.value && commentData.contents && commentData.password) {
       return setIsActive(true);
     }
 
@@ -63,7 +74,7 @@ export const useCommentWrite = () => {
     });
 
     // 모든 입력폼이 입력 되어있는지 확인
-    if (commentData.writer && event.target.value) {
+    if (commentData.writer && commentData.contents && event.target.value) {
       return setIsActive(true);
     }
 
@@ -72,18 +83,21 @@ export const useCommentWrite = () => {
   };
 
   const onChangeContents = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    setCommentData({
-      ...commentData,
-      contents: event.target.value,
+    setCommentData(prev => {
+      const updatedData = {
+        ...prev,
+        contents: event.target.value,
+      };
+
+      // 모든 입력폼이 입력 되어있는지 확인
+      setIsActive(
+        event.target.value && updatedData.writer && updatedData.password
+          ? true
+          : false,
+      );
+
+      return updatedData;
     });
-
-    // 모든 입력폼이 입력 되어있는지 확인
-    if (commentData.writer && commentData.password) {
-      return setIsActive(true);
-    }
-
-    // 입력이 되어있지 않다면 false
-    return setIsActive(false);
   };
 
   const onChangeRating = (value: number | null) => {
@@ -93,7 +107,7 @@ export const useCommentWrite = () => {
     });
 
     // 모든 입력폼이 입력 되어있는지 확인
-    if (commentData.writer && commentData.password) {
+    if (commentData.writer && commentData.contents && commentData.password) {
       return setIsActive(true);
     }
 
@@ -106,10 +120,11 @@ export const useCommentWrite = () => {
    */
   const onClickPostComment = async () => {
     // 값들이 모두 안 비어있는지 확인
-    if (commentData.writer && commentData.password) {
+    if (commentData.writer && commentData.contents && commentData.password) {
       // 에러들을 전부 false 로 변환
       setWriterError(false);
       setPasswordError(false);
+      setContentsError(false);
 
       try {
         // 댓글 등록 요청
@@ -121,7 +136,7 @@ export const useCommentWrite = () => {
         console.log(responseData);
 
         // 댓글 성공 얼럿
-        toggleAlertOpen();
+        toggleAlertOpen('successAlert');
         setAlertMessage(alertMessageList.success);
 
         // 댓글 입력폼 초기화
@@ -136,6 +151,7 @@ export const useCommentWrite = () => {
         // 댓글 데이터 입력 상태 true로 변경
         // -> 의존성 배열에 isSubmitted가 있는 useEffect 가 실행됨
         setIsSubmitted(true);
+        setIsActive(false);
       } catch (error) {
         setAlertMessage(alertMessageList.error);
         console.error('댓글 등록 실패: ', error);
@@ -150,6 +166,11 @@ export const useCommentWrite = () => {
         setPasswordError(true);
       } else {
         setPasswordError(false);
+      }
+      if (!commentData.contents) {
+        setContentsError(true);
+      } else {
+        setContentsError(false);
       }
     }
   };
@@ -168,6 +189,10 @@ export const useCommentWrite = () => {
     }
   }, [isSubmitted]); // isSubmitted 가 변경 될 때마다 실행
 
+  /**
+   * 댓글 업데이트(수정)
+   */
+
   return {
     onChangeWriter,
     onChangePassword,
@@ -178,6 +203,7 @@ export const useCommentWrite = () => {
     isActive,
     writerError,
     passwordError,
+    contentsError,
     alertMessage,
     isAlertOpen,
     alertMessageList,

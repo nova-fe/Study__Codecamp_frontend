@@ -128,7 +128,7 @@ export default function BoardsWrite(props: IBoardsWriteProps) {
                   readOnly
                 />
                 <button
-                  className="btn-black btn-md"
+                  className="btn-black-line btn-md"
                   onClick={() => toggleAlertOpen('addressAlert')}
                 >
                   우편번호 검색
@@ -196,7 +196,7 @@ export default function BoardsWrite(props: IBoardsWriteProps) {
           {/* 하단 버튼 */}
           <div className="flex justify-end gap-4">
             <Link href={props.isEdit ? `/boards/${boardId}` : '/boards'}>
-              <button className="btn-black btn-md">취소</button>
+              <button className="btn-black-line btn-md mr-4">취소</button>
             </Link>
             <button
               className={`${isActive || props.isEdit ? 'btn-primary' : 'btn-gray'} btn-md`}

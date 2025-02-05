@@ -122,7 +122,7 @@ export default function BoardsDetail() {
 
         <div className="flex justify-center gap-6">
           <Link href="/boards">
-            <button className="btn-black btn-sm flex items-center gap-3">
+            <button className="btn-black-line btn-sm flex items-center gap-3">
               <Image
                 className="h-auto w-[18px]"
                 src="/images/menu.png"
@@ -136,7 +136,7 @@ export default function BoardsDetail() {
           </Link>
 
           <Link href={`/boards/${boardId}/edit`}>
-            <button className="btn-black btn-sm flex items-center gap-3">
+            <button className="btn-black-line btn-sm flex items-center gap-3">
               <Image
                 className="h-auto w-[15px]"
                 src="/images/pencil.png"

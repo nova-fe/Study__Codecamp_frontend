@@ -9,8 +9,13 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import Button from '@mui/material/Button';
+import { ICommentWriteProps } from './types';
 
-export default function CommentWrite() {
+export default function CommentWrite({
+  isEdit,
+  comment,
+  formatDate,
+}: ICommentWriteProps) {
   const {
     onChangeWriter,
     onChangePassword,
@@ -21,6 +26,7 @@ export default function CommentWrite() {
     isActive,
     writerError,
     passwordError,
+    contentsError,
     alertMessage,
     alertMessageList,
     isAlertOpen,
@@ -29,18 +35,21 @@ export default function CommentWrite() {
 
   return (
     <div className="mt-6 border-t border-t-gray-200 pt-10">
-      <div className="flex items-center gap-[10px]">
-        <Image
-          className="h-[18px] w-[20px]"
-          src="/images/comment.png"
-          alt="profile"
-          width={0}
-          height={0}
-          sizes="100vw"
-        />
-        <span className="font-semibold">댓글</span>
-      </div>
-      <div className="py-6">
+      {!isEdit && (
+        <div className="flex items-center gap-[10px] pb-6">
+          <Image
+            className="h-[18px] w-[20px]"
+            src="/images/comment.png"
+            alt="profile"
+            width={0}
+            height={0}
+            sizes="100vw"
+          />
+          <span className="font-semibold">댓글</span>
+        </div>
+      )}
+
+      <div className="pb-6">
         <Rating
           name="customized-color"
           // 증가값
@@ -68,16 +77,19 @@ export default function CommentWrite() {
             type="text"
             placeholder="작성자 명을 입력해 주세요."
             onChange={onChangeWriter}
-            value={commentData?.writer}
+            value={isEdit ? comment?.writer : commentData?.writer}
+            disabled={isEdit ? true : false}
           />
-          {writerError && (
+          {!isEdit && writerError && (
             <div className="mt-2 text-red-500">{alertMessageList.required}</div>
           )}
         </div>
+
         <div className="flex flex-col">
           <label className="label-text mb-2">
             비밀번호<span className="text-red-500"> *</span>
           </label>
+
           <input
             className="input-primary w-80"
             type="password"
@@ -90,30 +102,50 @@ export default function CommentWrite() {
           )}
         </div>
       </div>
-      <div className="input-primary flex h-36 flex-col">
-        <textarea
-          className="h-24 w-full resize-none"
-          placeholder="댓글을 입력해 주세요."
-          maxLength={100}
-          onChange={onChangeContents}
-          value={commentData?.contents}
-        />
-        <div className="text-right font-medium text-gray-300">0/100</div>
+
+      <div>
+        <div className="input-primary flex h-36 flex-col">
+          <textarea
+            className="h-24 w-full resize-none"
+            placeholder="댓글을 입력해 주세요."
+            maxLength={100}
+            onChange={onChangeContents}
+            value={!isEdit ? commentData?.contents : comment?.contents || ''}
+          />
+
+          <div className="text-right font-medium text-gray-300">0/100</div>
+        </div>
+
+        {contentsError && (
+          <div className="mt-2 text-red-500">{alertMessageList.required}</div>
+        )}
       </div>
 
       <div className="mt-4 flex justify-end">
-        <button
-          onClick={onClickPostComment}
-          className={`${isActive ? 'btn-primary' : 'btn-gray'} btn-md`}
-        >
-          댓글 등록
-        </button>
+        {!isEdit ? (
+          <button
+            onClick={onClickPostComment}
+            className={`${isActive ? 'btn-primary' : 'btn-gray'} btn-md`}
+          >
+            댓글 등록
+          </button>
+        ) : (
+          <>
+            <button className="btn-black-line btn-md mr-4">취소</button>
+            <button
+              onClick={onClickPostComment}
+              className={`${isActive ? 'btn-primary' : 'btn-gray'} btn-md`}
+            >
+              수정 하기
+            </button>
+          </>
+        )}
 
         {/* 댓글 등록 얼럿 */}
         {isAlertOpen && (
           <Dialog
             open={true}
-            onClose={toggleAlertOpen}
+            onClose={() => toggleAlertOpen('successAlert')}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
@@ -126,13 +158,19 @@ export default function CommentWrite() {
               <Button
                 variant="contained"
                 disableElevation
-                onClick={toggleAlertOpen}
+                onClick={() => toggleAlertOpen('successAlert')}
               >
                 확인
               </Button>
             </DialogActions>
           </Dialog>
         )}
+        {/* 비밀번호 확인 얼럿 */}
+        {/* {isPasswordAlertOpen && (
+          
+        )
+
+        } */}
       </div>
     </div>
   );

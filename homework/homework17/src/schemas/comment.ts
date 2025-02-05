@@ -46,3 +46,20 @@ export const FetchCommentByKeyResponseSchema = z.array(
 );
 // 특정 댓글 목록 조회 응답 타입
 export type FetchCommentByKeyResponse = z.infer<typeof FetchCommentByKeyResponseSchema>;
+
+/**
+ * 댓글 업데이트
+ */
+// 댓글 업데이트 요청 스키마
+export const UpdateCommentRequestSchema = z.object({
+  id: z.string(),
+  updateData: z.object({
+    writer: z.string(),
+    password: z.string(),
+    contents: z.string(),
+    rating: z.number(),
+    createdAt: z.string(),
+  }),
+})
+// 댓글 업데이트 요청 타입
+export type UpdateCommentRequest = z.infer<typeof UpdateCommentRequestSchema>;

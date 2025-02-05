@@ -1,7 +1,14 @@
 'use client';
 
-import { CreateCommentRequest, FetchCommentByKeyRequestSchema, FetchCommentByKeyResponseSchema, FetchCommentResponse } from '@/schemas';
+import {
+  CreateCommentRequest,
+  FetchCommentByKeyRequestSchema,
+  FetchCommentByKeyResponseSchema,
+  FetchCommentResponse,
+  UpdateCommentRequestSchema,
+} from '@/schemas';
 import axios from 'axios';
+import { IUpdateCommentRequest } from './types';
 
 const BASE_URL = 'https://nova-codecamp-board-default-rtdb.firebaseio.com';
 
@@ -25,26 +32,39 @@ export const fetchCommentList = async (): Promise<FetchCommentResponse> => {
  */
 // ?orderBy="$key" (key를 기준으로 정렬),  startAfter: 해당 값 이후의 데이터를 가져옴, limitToFirst: 한번에 가져올 데이터 갯수 제한,
 export const fetchCommentByKey = async (startKey: string, limit: number) => {
-    // 요청 데이터 검증
-    FetchCommentByKeyRequestSchema.parse({startKey, limit});
-  
+  // 요청 데이터 검증
+  FetchCommentByKeyRequestSchema.parse({ startKey, limit });
+
   let url = `${BASE_URL}/homework-comment.json?orderBy="$key"&limitToFirst=${limit}`;
-  if(startKey) {
-    url += `&startAfter="${startKey}"`
+  if (startKey) {
+    url += `&startAfter="${startKey}"`;
   }
 
   const response = await axios.get(url);
   const data = response.data;
 
-  if(data) {
+  if (data) {
     // 응답 데이터 검증
     return FetchCommentByKeyResponseSchema.parse(
       Object.keys(data).map(key => ({
         id: key,
-        ...data[key]
-      })
-    ));
+        ...data[key],
+      })),
+    );
   }
 
   return [];
-}
+};
+
+/**
+ * 댓글 수정(업데이트)
+ */
+export const updateComment = async (
+  id: string,
+  updateData: IUpdateCommentRequest,
+) => {
+  UpdateCommentRequestSchema.parse({ id, updateData });
+
+  let url = `${BASE_URL}/homework-comment/${id}.json`;
+  const response = await axios.patch(url, updateData);
+};

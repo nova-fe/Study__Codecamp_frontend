@@ -20,3 +20,12 @@ export interface IUpdateBoardRequst {
     }
   | undefined;
 }
+
+
+export interface IUpdateCommentRequest {
+  writer: string;
+  password: string;
+  contents: string;
+  rating: number;
+  createdAt: string;
+}
