@@ -7,15 +7,15 @@ import StarRateRoundedIcon from '@mui/icons-material/StarRateRounded';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 export default function CommentList() {
-  const { commentListData, formatDate } = useCommentList();
+  const { commentListData, formatDate, loadCommentList, hasMore  } = useCommentList();
 
   return (
     <div>
       <InfiniteScroll
-        next={}
-        hasMore={}  // hasMore 가 true 일 때 next가 실행됨
+        next={loadCommentList}
+        hasMore={hasMore}  // hasMore 가 true 일 때 next가 실행됨
         loader={<div>로딩중입니다...</div>}
-        dataLength={}
+        dataLength={commentListData.length}
       >
         {commentListData?.map(comment => (
             <div
@@ -38,6 +38,7 @@ export default function CommentList() {
                   <Rating
                     name="customized-color"
                     value={comment?.rating}
+                    precision={0.5} // 별점단위(소수점)
                     classes={{
                       iconFilled: 'text-yellow-300', // 채워진 아이콘에 색상 적용
                       iconEmpty: 'text-gray-200', // 빈 아이콘에 색상 적용
