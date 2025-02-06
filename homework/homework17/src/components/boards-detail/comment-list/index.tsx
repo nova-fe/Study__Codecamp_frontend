@@ -21,7 +21,7 @@ export default function CommentList() {
           <CommentListItem
             comment={comment}
             formatDate={formatDate}
-            key={comment.id}
+            key={comment.commentId}
           />
         ))}
       </InfiniteScroll>

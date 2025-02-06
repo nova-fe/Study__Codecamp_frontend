@@ -1,7 +1,10 @@
+import { Dispatch, SetStateAction } from 'react';
+
 export type ICommentWriteProps = {
   isEdit?: boolean;
+  setIsEdit?: Dispatch<SetStateAction<boolean>>;
   comment?: {
-    id: string;
+    commentId: string;
     writer: string;
     password: string;
     contents: string;

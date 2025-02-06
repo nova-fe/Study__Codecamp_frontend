@@ -85,6 +85,7 @@ export default function CommentListItem({
       ) : (
         <CommentWrite
           isEdit={isEdit}
+          setIsEdit={setIsEdit}
           comment={comment}
           formatDate={formatDate}
         />

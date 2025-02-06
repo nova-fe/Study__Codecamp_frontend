@@ -13,6 +13,8 @@ export const useCommentWrite = () => {
     rating: 0,
     createdAt: new Date().toISOString(),
   });
+  // 기존 댓글 내용 가져오기
+  
 
   // 에러 상태
   const [writerError, setWriterError] = useState(false);
@@ -26,8 +28,10 @@ export const useCommentWrite = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   // 얼럿
+  const [isConfirm, setIsConfirm] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
-  const [isPasswordAlertOpen, setIsPasswordAlertOpen] = useState(false);
+  const [isCommentPasswordAlertOpen, setIsCommentPasswordAlertOpen] =
+    useState(false);
 
   // 얼럿 메세지
   const [alertMessage, setAlertMessage] = useState('Message');
@@ -43,10 +47,10 @@ export const useCommentWrite = () => {
   const toggleAlertOpen = (alertId: string) => {
     if (alertId === 'successAlert') {
       setIsAlertOpen(prev => !prev);
-      setIsPasswordAlertOpen(false);
+      setIsCommentPasswordAlertOpen(false);
     } else if (alertId === 'passwordAlert') {
       setIsAlertOpen(false);
-      setIsPasswordAlertOpen(prev => !prev);
+      setIsCommentPasswordAlertOpen(prev => !prev);
     }
   };
 
@@ -176,6 +180,46 @@ export const useCommentWrite = () => {
   };
 
   /**
+   * 댓글 업데이트(수정)
+   */
+  // 비밀번호 체크
+  const [checkCommentPasswordInput, setCheckCommentPasswordInput] =
+    useState('');
+
+  // 비밀번호 체크 입력값
+  const onChangeCheckCommentPassword = (
+    event: ChangeEvent<HTMLInputElement>,
+  ) => {
+    setCheckCommentPasswordInput(event.target.value);
+  };
+
+  // 모달 배경 클릭, esc 누를 경우 비밀번호 입력값 초기화
+  const onClickAlertClose = (
+    event: null,
+    reason: 'backdropClick' | 'escapeKeyDown' | 'customClose',
+  ) => {
+    if (reason === 'backdropClick' || reason === 'escapeKeyDown') {
+      setCheckCommentPasswordInput('');
+    }
+    setCheckCommentPasswordInput('');
+    setIsCommentPasswordAlertOpen(prev => !prev);
+  };
+
+  // 비밀번호 체크 모달 열기
+  const onClickCheckCommentPasswordOpen = () => {
+    toggleAlertOpen('passwordAlert');
+    setAlertMessage(alertMessageList.checkPassword);
+
+    // isConfirm true로 바꾸기
+    setIsConfirm(true);
+  };
+
+  // 확인 버튼 클릭시 댓글 업데이트
+  const onClickCommentUpdate = async () => {
+    if (checkCommentPasswordInput === )
+  }
+
+  /**
    * 댓글 등록 후 입력폼 초기화
    */
   // (비동기 작업 후 화면 재렌더링)
@@ -188,10 +232,6 @@ export const useCommentWrite = () => {
       setIsSubmitted(false); //  다시 데이터 전송 상태를 false 로 변경(초기화)
     }
   }, [isSubmitted]); // isSubmitted 가 변경 될 때마다 실행
-
-  /**
-   * 댓글 업데이트(수정)
-   */
 
   return {
     onChangeWriter,

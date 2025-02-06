@@ -13,6 +13,7 @@ import { ICommentWriteProps } from './types';
 
 export default function CommentWrite({
   isEdit,
+  setIsEdit,
   comment,
   formatDate,
 }: ICommentWriteProps) {
@@ -131,7 +132,14 @@ export default function CommentWrite({
           </button>
         ) : (
           <>
-            <button className="btn-black-line btn-md mr-4">취소</button>
+            <button
+              className="btn-black-line btn-md mr-4"
+              onClick={() => {
+                setIsEdit?.(false);
+              }}
+            >
+              취소
+            </button>
             <button
               onClick={onClickPostComment}
               className={`${isActive ? 'btn-primary' : 'btn-gray'} btn-md`}

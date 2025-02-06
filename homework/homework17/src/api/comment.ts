@@ -27,6 +27,9 @@ export const fetchCommentList = async (): Promise<FetchCommentResponse> => {
   return response.data; // {id : {...}, id: {...}}
 };
 
+// 특정 댓글 가져오기
+export const fetchComment = async (commentId: string | string[]) => {};
+
 /**
  * 특정 key와 limit에 따라 제한된 데이터 가져오기
  */
@@ -47,7 +50,7 @@ export const fetchCommentByKey = async (startKey: string, limit: number) => {
     // 응답 데이터 검증
     return FetchCommentByKeyResponseSchema.parse(
       Object.keys(data).map(key => ({
-        id: key,
+        commentId: key,
         ...data[key],
       })),
     );
@@ -60,11 +63,11 @@ export const fetchCommentByKey = async (startKey: string, limit: number) => {
  * 댓글 수정(업데이트)
  */
 export const updateComment = async (
-  id: string,
+  commentId: string,
   updateData: IUpdateCommentRequest,
 ) => {
-  UpdateCommentRequestSchema.parse({ id, updateData });
+  UpdateCommentRequestSchema.parse({ commentId, updateData });
 
-  let url = `${BASE_URL}/homework-comment/${id}.json`;
-  const response = await axios.patch(url, updateData);
+  let url = `${BASE_URL}/homework-comment/${commentId}.json`;
+  await axios.patch(url, updateData);
 };

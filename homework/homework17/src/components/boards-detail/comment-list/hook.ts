@@ -37,7 +37,7 @@ export const useCommentList = () => {
 
       if (newData.length > 0) {
         setCommentListData(prev => [...prev, ...newData]);
-        setLastKey(newData[newData.length - 1].id);
+        setLastKey(newData[newData.length - 1].commentId);
       }
 
       // 새 데이터의 갯수가 limit 보다 적은 경우 hasMore을 false로 변경
