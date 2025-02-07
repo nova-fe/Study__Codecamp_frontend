@@ -25,10 +25,18 @@ export type CreateCommentResponse = z.infer<typeof CreateCommentResponseSchema>;
 /**
  * 댓글 목록 조회
  */
-// 댓글 목록 조회 응답 스키마
-export const FetchCommentResponseSchema = z.record(CommentSchema);
-// 댓글 목록 조회 응답 타입
+// 댓글 조회 응답 스키마
+export const FetchCommentResponseSchema = CommentSchema.extend({});
+// 댓글 조회 응답 타입
 export type FetchCommentResponse = z.infer<typeof FetchCommentResponseSchema>;
+
+/**
+ * 댓글 조회
+ */
+// 댓글 조회 요청 스키마
+export const FetchCommentRequestSchema = z.string();
+// 댓글 조회 요청 타입
+export type FetchCommentRequest = z.infer<typeof FetchCommentRequestSchema>;
 
 /**
  * 특정 시작 key와 limit에 따라 댓글 가져오기
@@ -51,16 +59,11 @@ export type FetchCommentByKeyResponse = z.infer<
   typeof FetchCommentByKeyResponseSchema
 >;
 
-/**
- * 특정 댓글 조회
- */
-
-export const FetchCommentRequestSchema = z.object({});
 
 /**
- * 댓글 업데이트
+ * 댓글 수정(업데이트)
  */
-// 댓글 업데이트 요청 스키마
+// 댓글 수정(업데이트) 요청 스키마
 export const UpdateCommentRequestSchema = z.object({
   commentId: z.string(),
   updateData: z.object({
@@ -71,5 +74,5 @@ export const UpdateCommentRequestSchema = z.object({
     createdAt: z.string(),
   }),
 });
-// 댓글 업데이트 요청 타입
+// 댓글 수정(업데이트) 요청 타입
 export type UpdateCommentRequest = z.infer<typeof UpdateCommentRequestSchema>;

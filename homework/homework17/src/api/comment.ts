@@ -4,7 +4,9 @@ import {
   CreateCommentRequest,
   FetchCommentByKeyRequestSchema,
   FetchCommentByKeyResponseSchema,
+  FetchCommentRequestSchema,
   FetchCommentResponse,
+  FetchCommentResponseSchema,
   UpdateCommentRequestSchema,
 } from '@/schemas';
 import axios from 'axios';
@@ -27,8 +29,18 @@ export const fetchCommentList = async (): Promise<FetchCommentResponse> => {
   return response.data; // {id : {...}, id: {...}}
 };
 
-// 특정 댓글 가져오기
-export const fetchComment = async (commentId: string | string[]) => {};
+// 댓글 가져오기
+export const fetchComment = async (commentId: string) => {
+  // 요청 데이터 검증
+  FetchCommentRequestSchema.parse(commentId);
+  const response = await axios.get(`${BASE_URL}/homework-comment/${commentId}.json`);
+
+  const data = response.data;
+  // 응답 데이터 검증
+  FetchCommentResponseSchema.parse(data);
+
+  return data;
+};
 
 /**
  * 특정 key와 limit에 따라 제한된 데이터 가져오기

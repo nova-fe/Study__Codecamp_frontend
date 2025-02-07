@@ -1,10 +1,15 @@
 'use client';
 
-import { createComment } from '@/api';
-import { CreateCommentRequest, CreateCommentResponseSchema } from '@/schemas';
+import { createComment, fetchComment } from '@/api';
+import {
+  CreateCommentRequest,
+  CreateCommentResponseSchema,
+  FetchCommentResponse,
+} from '@/schemas';
 import { ChangeEvent, useState, useEffect } from 'react';
+import { ICommentWriteProps } from './types';
 
-export const useCommentWrite = () => {
+export const useCommentWrite = ({ comment }: ICommentWriteProps) => {
   // 데이터 state
   const [commentData, setCommentData] = useState<CreateCommentRequest>({
     writer: '',
@@ -14,7 +19,9 @@ export const useCommentWrite = () => {
     createdAt: new Date().toISOString(),
   });
   // 기존 댓글 내용 가져오기
-  
+  const [prevCommentData, setPrevCommentData] =
+    useState<FetchCommentResponse>();
+  const commentId: string = comment?.commentId;
 
   // 에러 상태
   const [writerError, setWriterError] = useState(false);
@@ -180,7 +187,25 @@ export const useCommentWrite = () => {
   };
 
   /**
-   * 댓글 업데이트(수정)
+   * 기존 댓글 가져오기
+   */
+  useEffect(() => {
+    const loadComment = async () => {
+      try {
+        const data = await fetchComment(commentId);
+
+        setPrevCommentData(data);
+      } catch (error) {
+        console.log('댓글 조회 실패', error);
+      }
+    };
+
+    if(commentId) loadComment();
+  },[commentId]);
+
+
+  /**
+   * 댓글 수정(업데이트)
    */
   // 비밀번호 체크
   const [checkCommentPasswordInput, setCheckCommentPasswordInput] =
@@ -214,9 +239,16 @@ export const useCommentWrite = () => {
     setIsConfirm(true);
   };
 
-  // 확인 버튼 클릭시 댓글 업데이트
+  // 확인 버튼 클릭시 댓글 수정(업데이트)
   const onClickCommentUpdate = async () => {
-    if (checkCommentPasswordInput === )
+    // 입력 비밀번호가 기존 비밀번호와 동일한 경우
+    if (checkCommentPasswordInput === prevCommentData?.password) {
+      try {
+        
+      } catch (error) {
+        console.error("댓글 수정 실패!!!", error);
+      }
+    }
   }
 
   /**
@@ -232,6 +264,8 @@ export const useCommentWrite = () => {
       setIsSubmitted(false); //  다시 데이터 전송 상태를 false 로 변경(초기화)
     }
   }, [isSubmitted]); // isSubmitted 가 변경 될 때마다 실행
+
+  // console.log(📌수정 댓글의 commentId: ` + commentId);
 
   return {
     onChangeWriter,

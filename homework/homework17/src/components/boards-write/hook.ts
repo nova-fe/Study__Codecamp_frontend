@@ -268,7 +268,9 @@ export const useBoardsWrite = () => {
     }
   };
 
-
+  /**
+   * 기존 게시글 가져오기
+   */
   useEffect(() => {
     const loadBoard = async () => {
       try {

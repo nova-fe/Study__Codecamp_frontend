@@ -32,7 +32,7 @@ export default function CommentWrite({
     alertMessageList,
     isAlertOpen,
     toggleAlertOpen,
-  } = useCommentWrite();
+  } = useCommentWrite({ comment });
 
   return (
     <div className="mt-6 border-t border-t-gray-200 pt-10">
