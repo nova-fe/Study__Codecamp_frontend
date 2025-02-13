@@ -32,7 +32,12 @@ export default function CommentWrite({
     alertMessageList,
     isAlertOpen,
     toggleAlertOpen,
-  } = useCommentWrite({ comment });
+    isConfirm,
+    onChangeCheckCommentPassword,
+    onClickCommentUpdate,
+    isUpdateAlertOpen,
+    isSuccessPassword
+  } = useCommentWrite({ comment, isEdit, setIsEdit });
 
   return (
     <div className="mt-6 border-t border-t-gray-200 pt-10">
@@ -55,7 +60,7 @@ export default function CommentWrite({
           name="customized-color"
           // 증가값
           precision={0.5}
-          value={commentData.rating}
+          value={isEdit ? comment?.rating : commentData?.rating}
           classes={{
             iconFilled: 'text-yellow-300', // 채워진 아이콘에 색상 적용
             iconEmpty: 'text-gray-200', // 빈 아이콘에 색상 적용
@@ -95,8 +100,9 @@ export default function CommentWrite({
             className="input-primary w-80"
             type="password"
             placeholder="비밀번호를 입력해 주세요."
-            onChange={onChangePassword}
-            value={commentData?.password}
+            onChange={isEdit ? onChangeCheckCommentPassword : onChangePassword}
+            value={isEdit ? undefined : commentData?.password}
+            defaultValue={isEdit ? '' : undefined}
           />
           {passwordError && (
             <div className="mt-2 text-red-500">{alertMessageList.required}</div>
@@ -111,7 +117,9 @@ export default function CommentWrite({
             placeholder="댓글을 입력해 주세요."
             maxLength={100}
             onChange={onChangeContents}
-            value={!isEdit ? commentData?.contents : comment?.contents || ''}
+            value={isEdit ? undefined : commentData?.contents}
+            defaultValue={isEdit ? comment?.contents : undefined}
+            // defaultValue={!isEdit ? commentData?.contents : comment?.contents || ''}
           />
 
           <div className="text-right font-medium text-gray-300">0/100</div>
@@ -141,7 +149,7 @@ export default function CommentWrite({
               취소
             </button>
             <button
-              onClick={onClickPostComment}
+              onClick={onClickCommentUpdate}
               className={`${isActive ? 'btn-primary' : 'btn-gray'} btn-md`}
             >
               수정 하기
@@ -173,12 +181,33 @@ export default function CommentWrite({
             </DialogActions>
           </Dialog>
         )}
-        {/* 비밀번호 확인 얼럿 */}
-        {/* {isPasswordAlertOpen && (
-          
-        )
 
-        } */}
+        {/* 댓글 수정 얼럿 */}
+        {isUpdateAlertOpen && (
+          <Dialog
+            open={true}
+            onClose={() => toggleAlertOpen('successUpdate')}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogContent sx={{ width: 300 }}>
+              <DialogContentText id="alert-dialog-description">
+                {alertMessage}
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                variant="contained"
+                disableElevation
+                onClick={() => {
+                  toggleAlertOpen('successUpdate');
+                }}
+              >
+                확인
+              </Button>
+            </DialogActions>
+          </Dialog>
+        )}
       </div>
     </div>
   );

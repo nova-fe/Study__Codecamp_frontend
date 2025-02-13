@@ -1,6 +1,6 @@
 'use client';
 
-import { createComment, fetchComment } from '@/api';
+import { createComment, fetchComment, updateComment } from '@/api';
 import {
   CreateCommentRequest,
   CreateCommentResponseSchema,
@@ -9,13 +9,13 @@ import {
 import { ChangeEvent, useState, useEffect } from 'react';
 import { ICommentWriteProps } from './types';
 
-export const useCommentWrite = ({ comment }: ICommentWriteProps) => {
+export const useCommentWrite = ({ comment, isEdit, setIsEdit }: ICommentWriteProps) => {
   // 데이터 state
   const [commentData, setCommentData] = useState<CreateCommentRequest>({
     writer: '',
     password: '',
     contents: '',
-    rating: 0,
+    rating: 5,
     createdAt: new Date().toISOString(),
   });
   // 기존 댓글 내용 가져오기
@@ -33,12 +33,15 @@ export const useCommentWrite = ({ comment }: ICommentWriteProps) => {
 
   // 데이터 전송 상태
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isUpdated, setIsUpdated] = useState(false);
+
+  // 수정시 비밀번호 같음 상태
+  const [isSuccessPassword, setIsSuccessPassword] = useState(false);
 
   // 얼럿
   const [isConfirm, setIsConfirm] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
-  const [isCommentPasswordAlertOpen, setIsCommentPasswordAlertOpen] =
-    useState(false);
+  const [isUpdateAlertOpen, setIsUpdateAlertOpen] = useState(false);
 
   // 얼럿 메세지
   const [alertMessage, setAlertMessage] = useState('Message');
@@ -46,18 +49,19 @@ export const useCommentWrite = ({ comment }: ICommentWriteProps) => {
     required: '필수입력 사항 입니다',
     error: '에러가 발생하였습니다.',
     success: '댓글이 등록되었습니다.',
+    successUpdate: '수정되었습니다.',
     falsePassword: '비밀번호를 확인해주세요.',
     checkPassword: '글을 작성할 때 입력하셨던 비밀번호를 입력해주세요.',
   };
 
   // 모달 열기/닫기 토글
   const toggleAlertOpen = (alertId: string) => {
-    if (alertId === 'successAlert') {
+    if (alertId === 'successAlert') { // 등록
       setIsAlertOpen(prev => !prev);
-      setIsCommentPasswordAlertOpen(false);
-    } else if (alertId === 'passwordAlert') {
+      setIsUpdateAlertOpen(false);
+    } else if (alertId === 'successUpdate') { // 수정
+      setIsUpdateAlertOpen(prev => !prev);
       setIsAlertOpen(false);
-      setIsCommentPasswordAlertOpen(prev => !prev);
     }
   };
 
@@ -144,7 +148,6 @@ export const useCommentWrite = ({ comment }: ICommentWriteProps) => {
 
         // 응답 데이터 검증
         const responseData = CreateCommentResponseSchema.parse(response);
-        console.log(responseData);
 
         // 댓글 성공 얼럿
         toggleAlertOpen('successAlert');
@@ -155,7 +158,7 @@ export const useCommentWrite = ({ comment }: ICommentWriteProps) => {
           writer: '',
           password: '',
           contents: '',
-          rating: 0,
+          rating: 5,
           createdAt: new Date().toISOString(),
         });
 
@@ -216,37 +219,68 @@ export const useCommentWrite = ({ comment }: ICommentWriteProps) => {
     event: ChangeEvent<HTMLInputElement>,
   ) => {
     setCheckCommentPasswordInput(event.target.value);
-  };
 
-  // 모달 배경 클릭, esc 누를 경우 비밀번호 입력값 초기화
-  const onClickAlertClose = (
-    event: null,
-    reason: 'backdropClick' | 'escapeKeyDown' | 'customClose',
-  ) => {
-    if (reason === 'backdropClick' || reason === 'escapeKeyDown') {
-      setCheckCommentPasswordInput('');
+    // 모든 입력폼이 입력 되어있는지 확인
+    if (commentData.contents && event.target.value) {
+      return setIsActive(true);
     }
-    setCheckCommentPasswordInput('');
-    setIsCommentPasswordAlertOpen(prev => !prev);
+
+    // 입력이 되어있지 않다면 false
+    return setIsActive(false);
   };
 
-  // 비밀번호 체크 모달 열기
-  const onClickCheckCommentPasswordOpen = () => {
-    toggleAlertOpen('passwordAlert');
-    setAlertMessage(alertMessageList.checkPassword);
-
-    // isConfirm true로 바꾸기
-    setIsConfirm(true);
-  };
-
-  // 확인 버튼 클릭시 댓글 수정(업데이트)
+  // 수정하기 버튼 클릭시 댓글 수정(업데이트)
   const onClickCommentUpdate = async () => {
-    // 입력 비밀번호가 기존 비밀번호와 동일한 경우
-    if (checkCommentPasswordInput === prevCommentData?.password) {
-      try {
-        
-      } catch (error) {
-        console.error("댓글 수정 실패!!!", error);
+    // 모든 입력폼이 입력 되어있는지 확인
+    if (commentData.contents || prevCommentData?.contents && checkCommentPasswordInput) {
+      // 에러들을 전부 false 로 변환
+      setPasswordError(false);
+      setContentsError(false);
+      
+      // 입력 비밀번호가 기존 비밀번호와 동일한 경우
+      if (checkCommentPasswordInput === prevCommentData?.password) {
+        try {
+          const updatedData = {
+            ...prevCommentData,
+            rating: commentData.rating || prevCommentData?.rating,
+            contents: commentData.contents || prevCommentData?.contents,
+          }
+
+          setIsSuccessPassword(true);
+
+          // 댓글 업데이트
+          await updateComment(commentId, updatedData);
+
+          // 수정 성공 얼럿
+          toggleAlertOpen('successUpdate');
+          setAlertMessage(alertMessageList.successUpdate);
+
+          // 댓글 데이터 입력 상태 true로 변경
+          setIsUpdated(true);
+          setIsActive(false);
+
+          console.log('댓글 수정 성공');
+        } catch (error) {
+          setIsSuccessPassword(false);
+          console.error("댓글 수정 실패", error);
+        }
+      } else {
+        setIsConfirm(false);
+        setCheckCommentPasswordInput("");
+        // 업데이트 실패 얼럿
+        toggleAlertOpen('successUpdate');
+        setAlertMessage(alertMessageList.falsePassword);
+      }
+    } else {
+      if (!commentData.password) {
+        setPasswordError(true);
+      } else {
+        setPasswordError(false);
+      }
+      if (!commentData.contents) {
+        setContentsError(true);
+      } else {
+        setContentsError(false);
       }
     }
   }
@@ -265,6 +299,17 @@ export const useCommentWrite = ({ comment }: ICommentWriteProps) => {
     }
   }, [isSubmitted]); // isSubmitted 가 변경 될 때마다 실행
 
+
+  /**
+   * 댓글 수정 후 리렌더링
+   */
+  useEffect(() => {
+    if(isUpdated) {
+      setIsUpdated(false);
+      setIsEdit(false);
+    }
+  }, [isUpdated, isEdit]); // isSubmitted 가 변경 될 때마다 실행
+
   // console.log(📌수정 댓글의 commentId: ` + commentId);
 
   return {
@@ -282,5 +327,10 @@ export const useCommentWrite = ({ comment }: ICommentWriteProps) => {
     isAlertOpen,
     alertMessageList,
     toggleAlertOpen,
+    isConfirm,
+    onChangeCheckCommentPassword,
+    onClickCommentUpdate,
+    isUpdateAlertOpen,
+    isSuccessPassword
   };
 };

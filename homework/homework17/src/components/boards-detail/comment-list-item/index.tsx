@@ -27,9 +27,11 @@ export default function CommentListItem({
                 height={0}
                 sizes="100vw"
               />
+              {/* 작성자 */}
               <div className="mr-2 font-light text-gray-500">
                 {comment?.writer}
               </div>
+              {/* 별점 */}
               <Rating
                 name="customized-color"
                 value={comment?.rating}
@@ -76,8 +78,10 @@ export default function CommentListItem({
             </div>
           </div>
 
+          {/* 댓글 내용 */}
           <div className="mb-2 text-gray-800">{comment?.contents}</div>
 
+          {/* 작성일 */}
           <div className="text-sm text-gray-400">
             {formatDate(comment?.createdAt)}
           </div>
