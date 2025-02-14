@@ -15,7 +15,7 @@ import { IUpdateCommentRequest } from './types';
 const BASE_URL = 'https://nova-codecamp-board-default-rtdb.firebaseio.com';
 
 // 댓글 등록
-export const createComment = async (commentData: CreateCommentRequest) => {
+export const createCommentApi = async (commentData: CreateCommentRequest) => {
   const response = await axios.post(
     `${BASE_URL}/homework-comment.json`,
     commentData,
@@ -24,13 +24,13 @@ export const createComment = async (commentData: CreateCommentRequest) => {
 };
 
 // 댓글 목록 가져오기
-export const fetchCommentList = async (): Promise<FetchCommentResponse> => {
+export const fetchCommentListApi = async (): Promise<FetchCommentResponse> => {
   const response = await axios.get(`${BASE_URL}/homework-comment.json`);
   return response.data; // {id : {...}, id: {...}}
 };
 
 // 댓글 가져오기
-export const fetchComment = async (commentId: string) => {
+export const fetchCommentApi = async (commentId: string) => {
   // 요청 데이터 검증
   FetchCommentRequestSchema.parse(commentId);
   const response = await axios.get(`${BASE_URL}/homework-comment/${commentId}.json`);
@@ -43,10 +43,13 @@ export const fetchComment = async (commentId: string) => {
 };
 
 /**
- * 특정 key와 limit에 따라 제한된 데이터 가져오기
+ * 📍 특정 key와 limit에 따라 제한된 데이터 가져오기
+ * @param startKey 
+ * @param limit 
+ * @returns 
  */
-// ?orderBy="$key" (key를 기준으로 정렬),  startAfter: 해당 값 이후의 데이터를 가져옴, limitToFirst: 한번에 가져올 데이터 갯수 제한,
-export const fetchCommentByKey = async (startKey: string, limit: number) => {
+// ?orderBy="$key" (key를 기준으로 정렬),  startAfter: 해당 값 이후의 데이터를 가져옴, limitToFirst: 한번에 가져올 데이터 갯수 제한,\
+export const fetchCommentByKeyApi = async (startKey: string, limit: number) => {
   // 요청 데이터 검증
   FetchCommentByKeyRequestSchema.parse({ startKey, limit });
 
@@ -72,9 +75,11 @@ export const fetchCommentByKey = async (startKey: string, limit: number) => {
 };
 
 /**
- * 댓글 수정(업데이트)
+ * 📍 댓글 수정(업데이트)
+ * @param commentId 
+ * @param updateData 
  */
-export const updateComment = async (
+export const updateCommentApi = async (
   commentId: string,
   updateData: IUpdateCommentRequest,
 ) => {

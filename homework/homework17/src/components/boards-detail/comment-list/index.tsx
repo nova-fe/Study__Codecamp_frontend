@@ -1,13 +1,11 @@
 'use client';
 
-import { useCommentList } from './hook';
-
 import InfiniteScroll from 'react-infinite-scroll-component';
 import CommentListItem from '../comment-list-item';
+import { useComments } from '../hooks/useComments';
 
 export default function CommentList() {
-  const { commentListData, formatDate, loadCommentList, hasMore } =
-    useCommentList();
+  const { loadCommentList, commentListData, hasMore, formatDate } = useComments();
 
   return (
     <div>
@@ -17,11 +15,11 @@ export default function CommentList() {
         loader={<div>로딩중입니다...</div>}
         dataLength={commentListData.length}
       >
-        {commentListData?.map(comment => (
+        {commentListData?.map(commentData => (
           <CommentListItem
-            comment={comment}
+            commentData={commentData}
             formatDate={formatDate}
-            key={comment.commentId}
+            key={commentData.commentId}
           />
         ))}
       </InfiniteScroll>

@@ -1,5 +1,5 @@
 export type ICommentListItemProps = {
-  comment: {
+  commentData: {
     commentId: string;
     writer: string;
     password: string;

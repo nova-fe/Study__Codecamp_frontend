@@ -6,12 +6,10 @@ import { Rating } from '@mui/material';
 import StarRateRoundedIcon from '@mui/icons-material/StarRateRounded';
 import { ICommentListItemProps } from './types';
 import CommentWrite from '../comment-write';
+import { useCommentListItem } from './hook';
 
-export default function CommentListItem({
-  comment,
-  formatDate,
-}: ICommentListItemProps) {
-  const [isEdit, setIsEdit] = useState(false);
+export default function CommentListItem({ commentData, formatDate }: ICommentListItemProps) {
+  const { isEdit, setIsEdit, prevCommentData, commentId } = useCommentListItem( { commentData, formatDate } );
 
   return (
     <div>
@@ -29,12 +27,12 @@ export default function CommentListItem({
               />
               {/* 작성자 */}
               <div className="mr-2 font-light text-gray-500">
-                {comment?.writer}
+                {commentData?.writer}
               </div>
               {/* 별점 */}
               <Rating
                 name="customized-color"
-                value={comment?.rating}
+                value={commentData?.rating}
                 precision={0.5} // 별점단위(소수점)
                 classes={{
                   iconFilled: 'text-yellow-300', // 채워진 아이콘에 색상 적용
@@ -79,18 +77,20 @@ export default function CommentListItem({
           </div>
 
           {/* 댓글 내용 */}
-          <div className="mb-2 text-gray-800">{comment?.contents}</div>
+          <div className="mb-2 text-gray-800">{commentData?.contents}</div>
 
           {/* 작성일 */}
           <div className="text-sm text-gray-400">
-            {formatDate(comment?.createdAt)}
+            {formatDate(commentData?.createdAt)}
           </div>
         </div>
       ) : (
         <CommentWrite
           isEdit={isEdit}
           setIsEdit={setIsEdit}
-          comment={comment}
+          commentData={commentData}
+          prevCommentData={prevCommentData}
+          commentId={commentId}
           formatDate={formatDate}
         />
       )}

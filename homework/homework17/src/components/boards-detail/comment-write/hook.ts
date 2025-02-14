@@ -1,34 +1,30 @@
 'use client';
 
-import { createComment, fetchComment, updateComment } from '@/api';
 import {
   CreateCommentRequest,
-  CreateCommentResponseSchema,
   FetchCommentResponse,
 } from '@/schemas';
 import { ChangeEvent, useState, useEffect } from 'react';
 import { ICommentWriteProps } from './types';
+import { useComments } from '../hooks/useComments';
 
-export const useCommentWrite = ({ comment, isEdit, setIsEdit }: ICommentWriteProps) => {
+export const useCommentWrite = ({ isEdit, setIsEdit, prevCommentData, commentId }: ICommentWriteProps) => {
+  const { addComment, updateComment } = useComments(); // '-OH901XYZ3ABC2'
   // 데이터 state
-  const [commentData, setCommentData] = useState<CreateCommentRequest>({
+  const [newCommentData, setNewCommentData] = useState<CreateCommentRequest>({
     writer: '',
     password: '',
     contents: '',
     rating: 5,
     createdAt: new Date().toISOString(),
   });
-  // 기존 댓글 내용 가져오기
-  const [prevCommentData, setPrevCommentData] =
-    useState<FetchCommentResponse>();
-  const commentId: string = comment?.commentId;
 
   // 에러 상태
   const [writerError, setWriterError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [contentsError, setContentsError] = useState(false);
 
-  // 활성 상태
+  // 활성(입력) 상태
   const [isActive, setIsActive] = useState(false);
 
   // 데이터 전송 상태
@@ -40,7 +36,7 @@ export const useCommentWrite = ({ comment, isEdit, setIsEdit }: ICommentWritePro
 
   // 얼럿
   const [isConfirm, setIsConfirm] = useState(false);
-  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [isAddSuccessAlertOpen, setIsAddSuccessAlertOpen] = useState(false);
   const [isUpdateAlertOpen, setIsUpdateAlertOpen] = useState(false);
 
   // 얼럿 메세지
@@ -57,11 +53,11 @@ export const useCommentWrite = ({ comment, isEdit, setIsEdit }: ICommentWritePro
   // 모달 열기/닫기 토글
   const toggleAlertOpen = (alertId: string) => {
     if (alertId === 'successAlert') { // 등록
-      setIsAlertOpen(prev => !prev);
+      setIsAddSuccessAlertOpen(prev => !prev);
       setIsUpdateAlertOpen(false);
     } else if (alertId === 'successUpdate') { // 수정
       setIsUpdateAlertOpen(prev => !prev);
-      setIsAlertOpen(false);
+      setIsAddSuccessAlertOpen(false);
     }
   };
 
@@ -69,63 +65,55 @@ export const useCommentWrite = ({ comment, isEdit, setIsEdit }: ICommentWritePro
    * 입력폼 onChange
    */
   const onChangeWriter = (event: ChangeEvent<HTMLInputElement>) => {
-    setCommentData({
-      ...commentData,
+    setNewCommentData({
+      ...newCommentData,
       writer: event.target.value,
     });
-
     // 모든 입력폼이 입력 되어있는지 확인
-    if (event.target.value && commentData.contents && commentData.password) {
+    if (event.target.value && newCommentData.contents && newCommentData.password) {
       return setIsActive(true);
     }
-
     // 입력이 되어있지 않다면 false
     return setIsActive(false);
   };
   const onChangePassword = (event: ChangeEvent<HTMLInputElement>) => {
-    setCommentData({
-      ...commentData,
+    setNewCommentData({
+      ...newCommentData,
       password: event.target.value,
     });
 
     // 모든 입력폼이 입력 되어있는지 확인
-    if (commentData.writer && commentData.contents && event.target.value) {
+    if (newCommentData.writer && newCommentData.contents && event.target.value) {
       return setIsActive(true);
     }
 
     // 입력이 되어있지 않다면 false
     return setIsActive(false);
   };
-
   const onChangeContents = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    setCommentData(prev => {
+    setNewCommentData(prev => {
       const updatedData = {
         ...prev,
         contents: event.target.value,
       };
-
       // 모든 입력폼이 입력 되어있는지 확인
       setIsActive(
         event.target.value && updatedData.writer && updatedData.password
           ? true
           : false,
       );
-
       return updatedData;
     });
   };
-
   const onChangeRating = (value: number | null) => {
-    setCommentData({
-      ...commentData,
+    setNewCommentData({
+      ...newCommentData,
       rating: value ?? 0, // value 가 null 이면 0으로 처리
     });
-
     // 모든 입력폼이 입력 되어있는지 확인
-    if (commentData.writer && commentData.contents && commentData.password) {
+    if (newCommentData.writer && newCommentData.contents && newCommentData.password) {
       return setIsActive(true);
     }
-
     // 입력이 되어있지 않다면 false
     return setIsActive(false);
   };
@@ -135,26 +123,22 @@ export const useCommentWrite = ({ comment, isEdit, setIsEdit }: ICommentWritePro
    */
   const onClickPostComment = async () => {
     // 값들이 모두 안 비어있는지 확인
-    if (commentData.writer && commentData.contents && commentData.password) {
+    if (newCommentData.writer && newCommentData.contents && newCommentData.password) {
       // 에러들을 전부 false 로 변환
       setWriterError(false);
       setPasswordError(false);
       setContentsError(false);
 
       try {
-        // 댓글 등록 요청
-        const response = await createComment(commentData);
-        // console.log(response); // 고유 ID 반환 ({name: '고유ID'})
-
-        // 응답 데이터 검증
-        const responseData = CreateCommentResponseSchema.parse(response);
+        // ✅ 댓글 등록
+        addComment(newCommentData);
 
         // 댓글 성공 얼럿
         toggleAlertOpen('successAlert');
         setAlertMessage(alertMessageList.success);
 
         // 댓글 입력폼 초기화
-        setCommentData({
+        setNewCommentData({
           writer: '',
           password: '',
           contents: '',
@@ -171,41 +155,23 @@ export const useCommentWrite = ({ comment, isEdit, setIsEdit }: ICommentWritePro
         console.error('댓글 등록 실패: ', error);
       }
     } else {
-      if (!commentData.writer) {
+      if (!newCommentData.writer) {
         setWriterError(true);
       } else {
         setWriterError(false);
       }
-      if (!commentData.password) {
+      if (!newCommentData.password) {
         setPasswordError(true);
       } else {
         setPasswordError(false);
       }
-      if (!commentData.contents) {
+      if (!newCommentData.contents) {
         setContentsError(true);
       } else {
         setContentsError(false);
       }
     }
   };
-
-  /**
-   * 기존 댓글 가져오기
-   */
-  useEffect(() => {
-    const loadComment = async () => {
-      try {
-        const data = await fetchComment(commentId);
-
-        setPrevCommentData(data);
-      } catch (error) {
-        console.log('댓글 조회 실패', error);
-      }
-    };
-
-    if(commentId) loadComment();
-  },[commentId]);
-
 
   /**
    * 댓글 수정(업데이트)
@@ -221,7 +187,7 @@ export const useCommentWrite = ({ comment, isEdit, setIsEdit }: ICommentWritePro
     setCheckCommentPasswordInput(event.target.value);
 
     // 모든 입력폼이 입력 되어있는지 확인
-    if (commentData.contents && event.target.value) {
+    if (newCommentData.contents && event.target.value) {
       return setIsActive(true);
     }
 
@@ -232,7 +198,7 @@ export const useCommentWrite = ({ comment, isEdit, setIsEdit }: ICommentWritePro
   // 수정하기 버튼 클릭시 댓글 수정(업데이트)
   const onClickCommentUpdate = async () => {
     // 모든 입력폼이 입력 되어있는지 확인
-    if (commentData.contents || prevCommentData?.contents && checkCommentPasswordInput) {
+    if (newCommentData.contents || prevCommentData?.contents && checkCommentPasswordInput) {
       // 에러들을 전부 false 로 변환
       setPasswordError(false);
       setContentsError(false);
@@ -242,14 +208,14 @@ export const useCommentWrite = ({ comment, isEdit, setIsEdit }: ICommentWritePro
         try {
           const updatedData = {
             ...prevCommentData,
-            rating: commentData.rating || prevCommentData?.rating,
-            contents: commentData.contents || prevCommentData?.contents,
+            rating: newCommentData.rating || prevCommentData?.rating,
+            contents: newCommentData.contents || prevCommentData?.contents,
           }
 
           setIsSuccessPassword(true);
 
           // 댓글 업데이트
-          await updateComment(commentId, updatedData);
+          updateComment(commentId, updatedData);
 
           // 수정 성공 얼럿
           toggleAlertOpen('successUpdate');
@@ -272,12 +238,12 @@ export const useCommentWrite = ({ comment, isEdit, setIsEdit }: ICommentWritePro
         setAlertMessage(alertMessageList.falsePassword);
       }
     } else {
-      if (!commentData.password) {
+      if (!newCommentData.password) {
         setPasswordError(true);
       } else {
         setPasswordError(false);
       }
-      if (!commentData.contents) {
+      if (!newCommentData.contents) {
         setContentsError(true);
       } else {
         setContentsError(false);
@@ -318,13 +284,13 @@ export const useCommentWrite = ({ comment, isEdit, setIsEdit }: ICommentWritePro
     onChangeContents,
     onClickPostComment,
     onChangeRating,
-    commentData,
+    newCommentData,
     isActive,
     writerError,
     passwordError,
     contentsError,
     alertMessage,
-    isAlertOpen,
+    isAddSuccessAlertOpen,
     alertMessageList,
     toggleAlertOpen,
     isConfirm,

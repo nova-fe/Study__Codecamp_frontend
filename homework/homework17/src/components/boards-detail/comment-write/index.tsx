@@ -10,34 +10,42 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import Button from '@mui/material/Button';
 import { ICommentWriteProps } from './types';
+import { useComments } from '../hooks/useComments';
 
 export default function CommentWrite({
   isEdit,
   setIsEdit,
-  comment,
-  formatDate,
+  commentData,
+  prevCommentData,
+  commentId
 }: ICommentWriteProps) {
   const {
+    // 입력
     onChangeWriter,
     onChangePassword,
     onChangeContents,
     onClickPostComment,
     onChangeRating,
-    commentData,
+    // 상태
     isActive,
+    isConfirm,
+    isAddSuccessAlertOpen,
+    isUpdateAlertOpen,
+    isSuccessPassword,
+    // 에러
     writerError,
     passwordError,
     contentsError,
+    // 데이터
+    newCommentData,
+    // 얼럿
     alertMessage,
     alertMessageList,
-    isAlertOpen,
     toggleAlertOpen,
-    isConfirm,
     onChangeCheckCommentPassword,
     onClickCommentUpdate,
-    isUpdateAlertOpen,
-    isSuccessPassword
-  } = useCommentWrite({ comment, isEdit, setIsEdit });
+
+  } = useCommentWrite({ isEdit, setIsEdit, prevCommentData, commentId });
 
   return (
     <div className="mt-6 border-t border-t-gray-200 pt-10">
@@ -60,7 +68,7 @@ export default function CommentWrite({
           name="customized-color"
           // 증가값
           precision={0.5}
-          value={isEdit ? comment?.rating : commentData?.rating}
+          value={isEdit ? commentData?.rating : newCommentData?.rating}
           classes={{
             iconFilled: 'text-yellow-300', // 채워진 아이콘에 색상 적용
             iconEmpty: 'text-gray-200', // 빈 아이콘에 색상 적용
@@ -83,7 +91,7 @@ export default function CommentWrite({
             type="text"
             placeholder="작성자 명을 입력해 주세요."
             onChange={onChangeWriter}
-            value={isEdit ? comment?.writer : commentData?.writer}
+            value={isEdit ? commentData?.writer : newCommentData?.writer}
             disabled={isEdit ? true : false}
           />
           {!isEdit && writerError && (
@@ -101,7 +109,7 @@ export default function CommentWrite({
             type="password"
             placeholder="비밀번호를 입력해 주세요."
             onChange={isEdit ? onChangeCheckCommentPassword : onChangePassword}
-            value={isEdit ? undefined : commentData?.password}
+            value={isEdit ? undefined : newCommentData?.password}
             defaultValue={isEdit ? '' : undefined}
           />
           {passwordError && (
@@ -117,9 +125,9 @@ export default function CommentWrite({
             placeholder="댓글을 입력해 주세요."
             maxLength={100}
             onChange={onChangeContents}
-            value={isEdit ? undefined : commentData?.contents}
-            defaultValue={isEdit ? comment?.contents : undefined}
-            // defaultValue={!isEdit ? commentData?.contents : comment?.contents || ''}
+            value={isEdit ? undefined : newCommentData?.contents}
+            defaultValue={isEdit ? commentData?.contents : undefined}
+            // defaultValue={!isEdit ? newCommentData?.contents : commentData?.contents || ''}
           />
 
           <div className="text-right font-medium text-gray-300">0/100</div>
@@ -158,7 +166,7 @@ export default function CommentWrite({
         )}
 
         {/* 댓글 등록 얼럿 */}
-        {isAlertOpen && (
+        {isAddSuccessAlertOpen && (
           <Dialog
             open={true}
             onClose={() => toggleAlertOpen('successAlert')}
