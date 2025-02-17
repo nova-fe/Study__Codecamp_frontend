@@ -2,13 +2,12 @@
 
 import {
   CreateCommentRequest,
-  FetchCommentResponse,
 } from '@/schemas';
 import { ChangeEvent, useState, useEffect } from 'react';
 import { ICommentWriteProps } from './types';
 import { useComments } from '../hooks/useComments';
 
-export const useCommentWrite = ({ isEdit, setIsEdit, prevCommentData, commentId }: ICommentWriteProps) => {
+export const useCommentWrite = ({ isEdit, setIsEdit,isUpdated, setIsUpdated, prevCommentData, commentId }: ICommentWriteProps) => {
   const { addComment, updateComment } = useComments(); // '-OH901XYZ3ABC2'
   // 데이터 state
   const [newCommentData, setNewCommentData] = useState<CreateCommentRequest>({
@@ -29,7 +28,6 @@ export const useCommentWrite = ({ isEdit, setIsEdit, prevCommentData, commentId 
 
   // 데이터 전송 상태
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isUpdated, setIsUpdated] = useState(false);
 
   // 수정시 비밀번호 같음 상태
   const [isSuccessPassword, setIsSuccessPassword] = useState(false);
@@ -69,12 +67,8 @@ export const useCommentWrite = ({ isEdit, setIsEdit, prevCommentData, commentId 
       ...newCommentData,
       writer: event.target.value,
     });
-    // 모든 입력폼이 입력 되어있는지 확인
-    if (event.target.value && newCommentData.contents && newCommentData.password) {
-      return setIsActive(true);
-    }
-    // 입력이 되어있지 않다면 false
-    return setIsActive(false);
+
+    return setIsActive(event.target.value && newCommentData.contents && newCommentData.password ? true : false);
   };
   const onChangePassword = (event: ChangeEvent<HTMLInputElement>) => {
     setNewCommentData({
@@ -83,12 +77,7 @@ export const useCommentWrite = ({ isEdit, setIsEdit, prevCommentData, commentId 
     });
 
     // 모든 입력폼이 입력 되어있는지 확인
-    if (newCommentData.writer && newCommentData.contents && event.target.value) {
-      return setIsActive(true);
-    }
-
-    // 입력이 되어있지 않다면 false
-    return setIsActive(false);
+    return setIsActive(newCommentData.writer && newCommentData.contents && event.target.value ? true : false);
   };
   const onChangeContents = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setNewCommentData(prev => {
@@ -97,11 +86,7 @@ export const useCommentWrite = ({ isEdit, setIsEdit, prevCommentData, commentId 
         contents: event.target.value,
       };
       // 모든 입력폼이 입력 되어있는지 확인
-      setIsActive(
-        event.target.value && updatedData.writer && updatedData.password
-          ? true
-          : false,
-      );
+      setIsActive( event.target.value && updatedData.writer && updatedData.password ? true : false);
       return updatedData;
     });
   };
@@ -187,12 +172,7 @@ export const useCommentWrite = ({ isEdit, setIsEdit, prevCommentData, commentId 
     setCheckCommentPasswordInput(event.target.value);
 
     // 모든 입력폼이 입력 되어있는지 확인
-    if (newCommentData.contents && event.target.value) {
-      return setIsActive(true);
-    }
-
-    // 입력이 되어있지 않다면 false
-    return setIsActive(false);
+    return setIsActive(newCommentData.contents && event.target.value ? true : false);
   };
 
   // 수정하기 버튼 클릭시 댓글 수정(업데이트)
@@ -232,7 +212,7 @@ export const useCommentWrite = ({ isEdit, setIsEdit, prevCommentData, commentId 
         }
       } else {
         setIsConfirm(false);
-        setCheckCommentPasswordInput("");
+        setCheckCommentPasswordInput(""); // 비밀번호 입력폼 초기화
         // 업데이트 실패 얼럿
         toggleAlertOpen('successUpdate');
         setAlertMessage(alertMessageList.falsePassword);
@@ -264,17 +244,6 @@ export const useCommentWrite = ({ isEdit, setIsEdit, prevCommentData, commentId 
       setIsSubmitted(false); //  다시 데이터 전송 상태를 false 로 변경(초기화)
     }
   }, [isSubmitted]); // isSubmitted 가 변경 될 때마다 실행
-
-
-  /**
-   * 댓글 수정 후 리렌더링
-   */
-  useEffect(() => {
-    if(isUpdated) {
-      setIsUpdated(false);
-      setIsEdit(false);
-    }
-  }, [isUpdated, isEdit]); // isSubmitted 가 변경 될 때마다 실행
 
   // console.log(📌수정 댓글의 commentId: ` + commentId);
 

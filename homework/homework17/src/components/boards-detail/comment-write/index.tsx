@@ -10,11 +10,12 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import Button from '@mui/material/Button';
 import { ICommentWriteProps } from './types';
-import { useComments } from '../hooks/useComments';
 
 export default function CommentWrite({
   isEdit,
   setIsEdit,
+  isUpdated,
+  setIsUpdated,
   commentData,
   prevCommentData,
   commentId
@@ -28,10 +29,8 @@ export default function CommentWrite({
     onChangeRating,
     // 상태
     isActive,
-    isConfirm,
     isAddSuccessAlertOpen,
     isUpdateAlertOpen,
-    isSuccessPassword,
     // 에러
     writerError,
     passwordError,
@@ -45,7 +44,7 @@ export default function CommentWrite({
     onChangeCheckCommentPassword,
     onClickCommentUpdate,
 
-  } = useCommentWrite({ isEdit, setIsEdit, prevCommentData, commentId });
+  } = useCommentWrite({ isEdit, setIsEdit, isUpdated, setIsUpdated, prevCommentData, commentId });
 
   return (
     <div className="mt-6 border-t border-t-gray-200 pt-10">

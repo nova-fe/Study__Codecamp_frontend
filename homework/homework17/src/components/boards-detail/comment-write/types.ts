@@ -3,6 +3,8 @@ import { Dispatch, SetStateAction } from 'react';
 export type ICommentWriteProps = {
   isEdit?: boolean;
   setIsEdit: Dispatch<SetStateAction<boolean>>;
+  isUpdated?: boolean;
+  setIsUpdated: Dispatch<SetStateAction<boolean>>;
   commentData?: {
     commentId: string;
     writer: string;

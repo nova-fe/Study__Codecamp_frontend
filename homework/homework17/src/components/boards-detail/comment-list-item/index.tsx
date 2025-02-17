@@ -9,7 +9,7 @@ import CommentWrite from '../comment-write';
 import { useCommentListItem } from './hook';
 
 export default function CommentListItem({ commentData, formatDate }: ICommentListItemProps) {
-  const { isEdit, setIsEdit, prevCommentData, commentId } = useCommentListItem( { commentData, formatDate } );
+  const { isEdit, setIsEdit, isUpdated, setIsUpdated, prevCommentData, commentId } = useCommentListItem( { commentData, formatDate } );
 
   return (
     <div>
@@ -88,6 +88,8 @@ export default function CommentListItem({ commentData, formatDate }: ICommentLis
         <CommentWrite
           isEdit={isEdit}
           setIsEdit={setIsEdit}
+          isUpdated={isUpdated}
+          setIsUpdated={setIsUpdated}
           commentData={commentData}
           prevCommentData={prevCommentData}
           commentId={commentId}
