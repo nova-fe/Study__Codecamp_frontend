@@ -11,10 +11,8 @@ import Link from 'next/link';
 
 export default function BoardsWrite(props: IBoardsWriteProps) {
   const {
-    onChangeWriter,
+    onChangeBoardRequiredInputs,
     onChangePassword,
-    onChangeContents,
-    onChangeTitle,
     onChangeAddressDetail,
     onChangeYoutubeUrl,
     onClickPost,
@@ -52,9 +50,11 @@ export default function BoardsWrite(props: IBoardsWriteProps) {
                 작성자<span className="text-red-500"> *</span>
               </label>
               <input
+                type="text"
+                id="writer"
                 className="input-primary"
                 placeholder="작성자 명을 입력해 주세요."
-                onChange={onChangeWriter}
+                onChange={onChangeBoardRequiredInputs}
                 defaultValue={prevData?.writer}
                 disabled={props.isEdit ? true : false}
               />
@@ -87,9 +87,10 @@ export default function BoardsWrite(props: IBoardsWriteProps) {
                 제목<span className="text-red-500"> *</span>
               </label>
               <input
+                id="title" 
                 className="input-primary"
                 placeholder="제목을 입력해 주세요."
-                onChange={onChangeTitle}
+                onChange={onChangeBoardRequiredInputs}
                 defaultValue={prevData?.title}
               />
               {titleError && (
@@ -105,9 +106,10 @@ export default function BoardsWrite(props: IBoardsWriteProps) {
                 내용<span className="text-red-500"> *</span>
               </label>
               <textarea
+                id="contents"
                 className="input-primary h-[22rem] resize-none"
                 placeholder="내용을 입력해 주세요."
-                onChange={onChangeContents}
+                onChange={onChangeBoardRequiredInputs}
                 defaultValue={prevData?.contents}
               ></textarea>
               {contentsError && (

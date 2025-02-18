@@ -5,7 +5,6 @@ import {
   CreateBoardRequestSchema,
   CreateBoardResponseSchema,
   FetchBoardResponse,
-  UpdateBoardRequestSchema,
 } from '@/schemas';
 import { IBoardIdParams, IUpdateBoardRequst } from './types';
 
@@ -13,10 +12,15 @@ export const useBoardsWrite = () => {
   const router = useRouter();
   const { boardId } = useParams<IBoardIdParams>();
 
-  const [writer, setWriter] = useState('');
+  const [boardRequiredInputs, setBoardRequiredInputs] = useState({
+    writer: '',
+    title: '',
+    contents: ''
+  })
   const [password, setPassword] = useState('');
-  const [title, setTitle] = useState('');
-  const [contents, setContents] = useState('');
+  // const [writer, setWriter] = useState('');
+  // const [title, setTitle] = useState('');
+  // const [contents, setContents] = useState('');
   const [address, setAddress] = useState({
     zipcode: '',
     address: '',
@@ -27,9 +31,9 @@ export const useBoardsWrite = () => {
   const [prevData, setPrevData] = useState<FetchBoardResponse>();
 
   const [writerError, setWriterError] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
   const [titleError, setTitleError] = useState(false);
   const [contentsError, setContentsError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
 
   const [isActive, setIsActive] = useState(false);
 
@@ -78,44 +82,35 @@ export const useBoardsWrite = () => {
   const dateFormatStr = formatDate(dateStr);
 
   const newData = {
-    writer,
+    ...boardRequiredInputs,
     password,
-    title,
-    contents,
     createdAt: dateStr, // ISO 8601 형식으로 날짜 저장
     date: dateFormatStr,
     address,
     youtubeUrl,
   };
 
-  const onChangeWriter = (event: ChangeEvent<HTMLInputElement>) => {
-    setWriter(event.target.value);
+  const onChangeBoardRequiredInputs = (event: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>) => {
+    setBoardRequiredInputs((prev) => {
+      const requiredInputs = {
+        ...prev,
+        [event.target.id]: event.target.value
+      }
 
-    if (event.target.value && password && title && contents)
-      return setIsActive(true);
-    setIsActive(false);
-  };
+      // 필수 값들이 모두 채워져있는지 확인
+      // Object.values() : 객체의 값들만 배열로 반환
+      // every() : 모든 요소가 특정 조건을 만족하는지 확인  
+      const isAllActive = Object.values(requiredInputs).every(value => value !== "");
+      setIsActive(isAllActive);
+
+      return requiredInputs;
+    });
+  }
 
   const onChangePassword = (event: ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
 
-    if (writer && event.target.value && title && contents)
-      return setIsActive(true);
-    setIsActive(false);
-  };
-
-  const onChangeTitle = (event: ChangeEvent<HTMLInputElement>) => {
-    setTitle(event.target.value);
-
-    if (writer && password && event.target.value && contents)
-      return setIsActive(true);
-    setIsActive(false);
-  };
-
-  const onChangeContents = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    setContents(event.target.value);
-
-    if (writer && password && title && event.target.value)
+    if (Object.values(boardRequiredInputs).every(Boolean) && event.target.value)
       return setIsActive(true);
     setIsActive(false);
   };
@@ -145,7 +140,7 @@ export const useBoardsWrite = () => {
    * 게시글 등록
    */
   const onClickPost = async () => {
-    if (writer && password && title && contents) {
+    if (Object.values(boardRequiredInputs).every(Boolean) && password) {
       setWriterError(false);
       setPasswordError(false);
       setTitleError(false);
@@ -170,25 +165,25 @@ export const useBoardsWrite = () => {
 
       return;
     } else {
-      if (writer === '') {
+      if (boardRequiredInputs.writer === '') {
         setWriterError(true);
       } else {
         setWriterError(false);
+      }
+      if (boardRequiredInputs.title === '') {
+        setTitleError(true);
+      } else {
+        setTitleError(false);
+      }
+      if (boardRequiredInputs.contents === '') {
+        setContentsError(true);
+      } else {
+        setContentsError(false);
       }
       if (password === '') {
         setPasswordError(true);
       } else {
         setPasswordError(false);
-      }
-      if (title === '') {
-        setTitleError(true);
-      } else {
-        setTitleError(false);
-      }
-      if (contents === '') {
-        setContentsError(true);
-      } else {
-        setContentsError(false);
       }
     }
   };
@@ -231,8 +226,8 @@ export const useBoardsWrite = () => {
       try {
         const updatedData = {
           ...prevData,
-          title: title || prevData?.title,
-          contents: contents || prevData?.contents,
+          title: boardRequiredInputs.title || prevData?.title,
+          contents: boardRequiredInputs.contents || prevData?.contents,
           // 빈 값('')도 저장되도록 하기 위해 Nullish  연산자 사용
           youtubeUrl: youtubeUrl ?? prevData?.youtubeUrl,
           address: {
@@ -288,10 +283,8 @@ export const useBoardsWrite = () => {
   }, [boardId]);
 
   return {
-    onChangeWriter,
+    onChangeBoardRequiredInputs,
     onChangePassword,
-    onChangeContents,
-    onChangeTitle,
     onChangeAddressDetail,
     onChangeYoutubeUrl,
     onClickPost,
