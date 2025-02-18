@@ -1,6 +1,6 @@
 import { useEffect, ChangeEvent, useState, SyntheticEvent } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { createBoard, fetchBoard, updateBoard } from '@/api';
+import { createBoardApi, fetchBoardApi, updateBoardApi } from '@/api';
 import {
   CreateBoardRequestSchema,
   CreateBoardResponseSchema,
@@ -155,7 +155,7 @@ export const useBoardsWrite = () => {
         // 요청 데이터 검증
         const requestData = CreateBoardRequestSchema.parse(newData);
         // Firebase에 게시글 추가
-        const data = await createBoard(requestData);
+        const data = await createBoardApi(requestData);
         // 응답 데이터 검증
         const responseData = CreateBoardResponseSchema.parse(data);
 
@@ -248,7 +248,7 @@ export const useBoardsWrite = () => {
         const requestData:IUpdateBoardRequst = updatedData;
 
         // 게시글 업데이트
-        await updateBoard(boardId, requestData);
+        await updateBoardApi(boardId, requestData);
 
         // 게시글이 추가된 후, 해당 게시글의 ID로 이동
         router.push(`/boards/${boardId}`);
@@ -275,7 +275,7 @@ export const useBoardsWrite = () => {
     const loadBoard = async () => {
       try {
         // Firebase Realtime Database에서 해당 게시글 불러오기
-        const data = await fetchBoard(boardId);
+        const data = await fetchBoardApi(boardId);
 
         setPrevData(data);
       } catch (error) {

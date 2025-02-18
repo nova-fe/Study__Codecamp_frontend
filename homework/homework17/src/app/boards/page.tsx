@@ -3,7 +3,7 @@
 import BoardsList from '@/components/boards-list/list';
 import Pagination from '@/components/boards-list/pagination';
 import { useState, useEffect } from 'react';
-import { fetchBoardsByKey, fetchBoardsKey, deleteBoard } from '@/api/boards';
+import { fetchBoardsByKeyApi, fetchBoardsKeyApi, deleteBoardApi } from '@/api/boards';
 import { FetchBoardsByKeyArray, FetchBoardsByKeyResponse, FetchBoardsKeyResponse } from '@/schemas';
 
 
@@ -24,7 +24,7 @@ export default function BoardsListPage() {
       // keyList에서 현재 페이지에서 -1을 한 값에 limit을 곱한값을 startKey에 담음
       const startKey = keyList[(currentPage - 1) * limitPage];
 
-      const data = await fetchBoardsByKey(startKey, limitPage);
+      const data = await fetchBoardsByKeyApi(startKey, limitPage);
 
       // 목록 객체 배열화
       const boardsArray = data ? Object.keys(data).map((key, index) => ({
@@ -43,7 +43,7 @@ export default function BoardsListPage() {
    */
   useEffect(() => {
     const loadKeys = async () => {
-      const keys = await fetchBoardsKey();
+      const keys = await fetchBoardsKeyApi();
       setKeyList(keys);
     }
 
@@ -56,7 +56,7 @@ export default function BoardsListPage() {
   const onClickDelete = async (boardId: string) => {
     try {
       // 해당 게시글 삭제하기
-      await deleteBoard(boardId);
+      await deleteBoardApi(boardId);
 
       // 삭제된 게시글을 제외하고 상태 업데이트
       setData(prevData => {

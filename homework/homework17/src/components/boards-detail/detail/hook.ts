@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { fetchBoard } from '@/api';
+import { fetchBoardApi } from '@/api';
 import { FetchBoardResponse } from '@/schemas';
 
 export const useBoardsDetail = () => {
@@ -23,7 +23,7 @@ export const useBoardsDetail = () => {
     const loadBoard = async () => {
       try {
         // 해당 게시글 불러오기
-        const data = await fetchBoard(boardIdStr);
+        const data = await fetchBoardApi(boardIdStr);
 
         setData(data);
       } catch (error) {

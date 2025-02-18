@@ -16,7 +16,6 @@ import {
   FetchBoardsKeyResponse,
   FetchBoardsResponse,
   FetchBoardsResponseSchema,
-  UpdateBoardRequest,
   UpdateBoardRequestSchema,
 } from '../schemas/boards';
 import { IUpdateBoardRequst } from './types';
@@ -24,9 +23,10 @@ import { IUpdateBoardRequst } from './types';
 const BASE_URL = 'https://nova-codecamp-board-default-rtdb.firebaseio.com';
 
 /**
- * 게시판 목록 가져오기
+ * 🔁게시판 목록 가져오기
+ * @returns data {...}
  */
-export const fetchBoards = async (): Promise<FetchBoardsResponse> => {
+export const fetchBoardsApi = async (): Promise<FetchBoardsResponse> => {
   const response = await axios.get(`${BASE_URL}/homework.json`);
   const data = response.data;
   // 응답 데이터 검증
@@ -36,9 +36,10 @@ export const fetchBoards = async (): Promise<FetchBoardsResponse> => {
 };
 
 /**
- * 게시글 key 목록 가져오기
+ * 🔁게시글 key 목록 가져오기
+ * @returns
  */
-export const fetchBoardsKey = async (): Promise<FetchBoardsKeyResponse> => {
+export const fetchBoardsKeyApi = async (): Promise<FetchBoardsKeyResponse> => {
   const response = await axios.get(`${BASE_URL}/homework.json`);
   const data = response.data;
 
@@ -46,10 +47,13 @@ export const fetchBoardsKey = async (): Promise<FetchBoardsKeyResponse> => {
 };
 
 /**
- * 특정 key와 limit에 따라 제한된 데이터 가져오기(페이징)
+ * 🔁특정 key와 limit에 따라 제한된 데이터 가져오기(페이징)
+ * @param startKey 
+ * @param limit 
+ * @returns 
  */
 // ?orderBy="$key" (key를 기준으로 정렬),  startAt: 해당 값 이후의 데이터를 가져옴, limitToFirst: 한번에 가져올 데이터 갯수 제한,
-export const fetchBoardsByKey = async (
+export const fetchBoardsByKeyApi = async (
   startKey: string,
   limit: number,
 ): Promise<FetchBoardsByKeyResponse> => {
@@ -67,9 +71,11 @@ export const fetchBoardsByKey = async (
 };
 
 /**
- * 게시글 등록
+ * 🔁게시글 등록
+ * @param newData 
+ * @returns 
  */
-export const createBoard = async (newData: CreateBoardRequest): Promise<CreateBoardResponse> => {
+export const createBoardApi = async (newData: CreateBoardRequest): Promise<CreateBoardResponse> => {
   // 요청 데이터 검증
   CreateBoardRequestSchema.parse(newData);
   const response = await axios.post(`${BASE_URL}/homework.json`, newData);
@@ -81,9 +87,11 @@ export const createBoard = async (newData: CreateBoardRequest): Promise<CreateBo
 };
 
 /**
- * 특정 게시글 가져오기
+ * 🔁특정 게시글 가져오기
+ * @param boardId 
+ * @returns {...}
  */
-export const fetchBoard = async (boardId: string | string[]): Promise<FetchBoardResponse> => {
+export const fetchBoardApi = async (boardId: string | string[]): Promise<FetchBoardResponse> => {
   // 요청 데이터 검증
   FetchBoardRequestSchema.parse(boardId);
   const response = await axios.get(`${BASE_URL}/homework/${boardId}.json`);
@@ -96,18 +104,21 @@ export const fetchBoard = async (boardId: string | string[]): Promise<FetchBoard
 };
 
 /**
- * 게시글 수정(업데이트)
+ * 🔁게시글 수정(업데이트)
+ * @param boardId 
+ * @param updatedData 
  */
-export const updateBoard = async (boardId: string, updatedData: IUpdateBoardRequst) => {
+export const updateBoardApi = async (boardId: string, updatedData: IUpdateBoardRequst) => {
   // 요청 데이터 검증
   UpdateBoardRequestSchema.parse({boardId, updatedData});
   await axios.patch(`${BASE_URL}/homework/${boardId}.json`, updatedData);
 };
-
+ 
 /**
- * 게시글 삭제
+ * 🔁게시글 삭제
+ * @param boardId 
  */
-export const deleteBoard = async (boardId: string) => {
+export const deleteBoardApi = async (boardId: string) => {
   // 요청 데이터 검증
   DeleteBoardRequestSchema.parse({ boardId });
   await axios.delete(`${BASE_URL}/homework/${boardId}.json`);
