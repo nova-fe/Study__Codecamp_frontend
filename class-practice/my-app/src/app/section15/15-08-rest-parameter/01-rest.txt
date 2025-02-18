@@ -1,0 +1,19 @@
+const profile = {
+    name: "철수",
+    age: 12,
+    school: "다람쥐초등학교",
+    hobby: "수영"
+}
+
+const {hobby, ...rest} = profile
+
+rest  -> hobby 가 삭제된 객체가 나옴
+{name: '철수', age: 12, school: '다람쥐초등학교'}
+
+profile -> 위 스프레드연산자에서 원본은 건드리지 않았다는 뜻
+{name: '철수', age: 12, school: '다람쥐초등학교', hobby: '수영'}
+
+delete profile.hobby
+
+profile
+{name: '철수', age: 12, school: '다람쥐초등학교'}
