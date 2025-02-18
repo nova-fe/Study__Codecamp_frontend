@@ -1,0 +1,39 @@
+lass Monster {
+    power = 50
+
+    attack() {
+        console.log("공격합니다!")
+    }
+}
+
+class SuperMonster extends Monster {  // Monster를 상속
+    // Monster를 상속했으므로 power, attack() 이 있다고 생각하면 됨
+
+    // 오버라이딩 (Monster에 있던 attack을 덮어씀)
+    attack() {
+        console.log("슈퍼몬스터가 공격합니다!")
+    }
+
+    run() {
+        console.log("도망가자!")
+    }
+}
+
+const monster = new Monster()
+
+const superMonster = new SuperMonster()
+
+monster.power
+50
+
+monster.attack()
+공격합니다!
+
+superMonster.power
+50
+
+superMonster.attack()
+슈퍼몬스터가 공격합니다!
+
+superMonster.run()
+도망가자!

@@ -1,0 +1,17 @@
+class Profile {
+    name = "철수"
+    age = 12
+    school() {
+        console.log(this)
+    }
+}
+
+const profile = new Profile()
+
+profile.school()
+Profile {name: '철수', age: 12}
+
+
+this란? 자기 자신을 감싸고있는 객체 또는 클래스
+-> 없을 땐 최상위의 window
+* 단, 실행 주체가 누구냐에 따라서 자기 자신을 감싸고 있는 주체가 달라지게됨

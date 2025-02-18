@@ -1,0 +1,9 @@
+this
+Window {0: Window, 1: global, 2: global, 3: global, 4: Window, 5: global, window: Window, self: Window, document: document, name: '', location: Location, …}
+
+function 더하기() {
+    console.log(this)
+}
+
+더하기()
+Window {0: Window, 1: global, 2: global, 3: global, 4: Window, 5: global, window: Window, self: Window, document: document, name: '', location: Location, …}

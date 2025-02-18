@@ -1,0 +1,24 @@
+// 설명서(붕어빵 틀)
+class Date {
+  // class 안에서는 const, let, function 이 들어가지 않음
+
+  qqq = 3
+
+  getFullYear() { // 메서드
+
+  }
+  getMonth() {
+
+  }
+}
+
+// 설명서를 찍어냄(붕어빵)
+// 찍어낸 객체: '인스턴스'
+
+// date 는? 인스턴스
+const date = new Date()
+date.qqq
+date.getFullYear()
+date.getMonth()
+
+const date2 = new Date()

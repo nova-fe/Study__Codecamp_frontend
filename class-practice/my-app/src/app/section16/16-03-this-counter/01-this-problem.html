@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <title>this의 이해</title>
+    <script>
+      class 카운터클래스 {
+        count = 10;
+
+        카운트올림메서드() {
+          console.log('=================================');
+          console.log('카운트올림메서드 this:', this); // <button>​카운트 올리는 버튼​</button>​
+          console.log('=================================');
+
+          // console.log('카운트를 올려주면 됨');
+          this.count = this.count + 1;
+          console.log(this.count); // NaN 이 나옴
+        }
+
+        버튼그리기메서드() {
+          console.log('=================================');
+          console.log('버튼크리기메서드 this:', this); // 카운터클래스 {count: 10}
+          console.log('=================================');
+
+          const button = document.createElement('button');
+          button.innerText = '카운트 올리는 버튼';
+          button.addEventListener('click', this.카운트올림메서드);
+          document.body.appendChild(button);
+        }
+      }
+
+      window.onload = () => {
+        const 카운터 = new 카운터클래스();
+        카운터.버튼그리기메서드();
+      };
+    </script>
+  </head>
+  <body></body>
+</html>
