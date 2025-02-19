@@ -23,7 +23,7 @@
 
           const button = document.createElement('button');
           button.innerText = '카운트 올리는 버튼';
-          button.addEventListener('click', this.카운트올림메서드);
+          button.addEventListener('click', this.카운트올림메서드.bind(this)); // 해결방법 2) this가 변경될 부분에, 미리 현재 로직상의 this를 연결(.bind)
           document.body.appendChild(button);
         }
       }
