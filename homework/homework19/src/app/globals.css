@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    font-family: var(--font-global);
+  }
+}
+
+@layer components {
+  .input-primary {
+    @apply rounded-lg border border-gray-300 px-4 py-3 placeholder:text-gray-400;
+  }
+  .label-text {
+    @apply text-base font-medium;
+  }
+  .btn-primary {
+    @apply border border-blue-500 bg-blue-500 text-white;
+  }
+  .btn-black {
+    @apply border border-black bg-black text-white;
+  }
+  .btn-black-line {
+    @apply border border-black bg-white text-black;
+  }
+
+  .btn-gray {
+    @apply border border-gray-300 bg-gray-300 text-white;
+  }
+  .btn-md {
+    @apply rounded-lg px-4 py-3 text-lg font-bold;
+  }
+
+  .btn-sm {
+    @apply rounded-lg px-3 py-2 text-sm font-normal;
+  }
+}
