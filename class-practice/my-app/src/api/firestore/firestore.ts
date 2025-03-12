@@ -1,6 +1,7 @@
 // Firebase 초기화
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -16,5 +17,9 @@ const firebaseConfig = {
 // Firebase 앱 초기화
 const app = initializeApp(firebaseConfig);
 
-// Initialize Cloud Firestore and get a reference to the service
-export const db = getFirestore(app);
+//  // Firestore 인스턴스
+const db = getFirestore(app);
+// Firebase Storage 인스턴스
+const storage = getStorage(app);
+
+export { db, storage}

@@ -20,7 +20,6 @@ export const fetchPosts = async () => {
   }))
 };
 
-
 /**
  * Firestore에서 특정 페이지 데이터 가져오기
  * @param {number} currentPage - 요청한 페이지 번호
