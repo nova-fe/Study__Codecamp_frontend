@@ -3,7 +3,8 @@
 import { db } from "./firestore";
 import { 
   collection,        // Firestore 컬렉션 참조
-  getDocs           // Firestore에서 문서 가져오기
+  getDocs,           // Firestore에서 문서 가져오기
+  addDoc  // Firestore에 문서 추가하기
 } from "firebase/firestore"; 
 
 /**
@@ -19,6 +20,19 @@ export const fetchPosts = async () => {
     ...doc.data()
   }))
 };
+
+/**
+ * 게시글 등록하기
+ */
+export const addPosts = async (newData) => {
+  try {
+    const docRef = await addDoc(collection(db, "class-practice"), { newData });
+    console.log("게시글이 추가되었습니다. ID: ", docRef.id);
+  } catch (error) {
+    console.error("게시글 등록 에러!!!", error);
+  }
+
+}
 
 /**
  * Firestore에서 특정 페이지 데이터 가져오기
