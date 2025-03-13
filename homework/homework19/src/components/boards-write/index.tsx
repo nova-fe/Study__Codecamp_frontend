@@ -8,6 +8,7 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import DaumPostcodeEmbed from 'react-daum-postcode';
 import Link from 'next/link';
+import ImageItem from './image-item';
 
 export default function BoardsWrite(props: IBoardsWriteProps) {
   const {
@@ -35,7 +36,10 @@ export default function BoardsWrite(props: IBoardsWriteProps) {
     isAddressAlertOpen,
     handleComplete,
     address,
+    images,
+    setImages
   } = useBoardsWrite();
+  
   return (
     <>
       <div className="container mx-auto max-w-screen-xl py-10">
@@ -182,15 +186,16 @@ export default function BoardsWrite(props: IBoardsWriteProps) {
             <div className="flex flex-col">
               <label className="label-text mb-2">사진 첨부</label>
               <div className="flex gap-4">
-                <button className="bg-plus-icon size-40 rounded-lg bg-gray-100 bg-[bottom_5rem_center] bg-no-repeat leading-[14rem] tracking-tighter text-gray-600">
+                <ImageItem images={images} setImages={setImages} imageIndex={0} />
+                <ImageItem images={images} setImages={setImages} imageIndex={1} />
+                <ImageItem images={images} setImages={setImages} imageIndex={2} />
+
+                {/* <button className="bg-plus-icon size-40 rounded-lg bg-gray-100 bg-[bottom_5rem_center] bg-no-repeat leading-[14rem] tracking-tighter text-gray-600">
                   클릭해서 사진 업로드
                 </button>
                 <button className="bg-plus-icon size-40 rounded-lg bg-gray-100 bg-[bottom_5rem_center] bg-no-repeat leading-[14rem] tracking-tighter text-gray-600">
                   클릭해서 사진 업로드
-                </button>
-                <button className="bg-plus-icon size-40 rounded-lg bg-gray-100 bg-[bottom_5rem_center] bg-no-repeat leading-[14rem] tracking-tighter text-gray-600">
-                  클릭해서 사진 업로드
-                </button>
+                </button> */}
               </div>
             </div>
           </div>

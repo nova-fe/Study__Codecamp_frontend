@@ -1,4 +1,4 @@
-import { useEffect, ChangeEvent, useState, SyntheticEvent } from 'react';
+import { useEffect, ChangeEvent, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { createBoardApi, fetchBoardApi, updateBoardApi } from '@/api';
 import {
@@ -7,6 +7,8 @@ import {
   FetchBoardResponse,
 } from '@/schemas';
 import { IBoardIdParams, IUpdateBoardRequst } from './types';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { storage } from '@/api/firebase/firestore';
 
 export const useBoardsWrite = () => {
   const router = useRouter();
@@ -27,6 +29,8 @@ export const useBoardsWrite = () => {
     addressDetail: '',
   });
   const [youtubeUrl, setYoutubeUrl] = useState('');
+  const [images, setImages] = useState<(File | undefined)[]>([undefined, undefined, undefined]); // 이미지 data
+
   // 기존 게시글 내용 가져오기
   const [prevData, setPrevData] = useState<FetchBoardResponse>();
 
@@ -81,15 +85,17 @@ export const useBoardsWrite = () => {
   const dateStr = new Date().toISOString();
   const dateFormatStr = formatDate(dateStr);
 
-  const newData = {
+  const boardData = {
     ...boardRequiredInputs,
     password,
     createdAt: dateStr, // ISO 8601 형식으로 날짜 저장
     date: dateFormatStr,
     address,
     youtubeUrl,
+    images
   };
 
+  // 필수 값(작성자, 제목, 내용) 입력
   const onChangeBoardRequiredInputs = (event: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>) => {
     setBoardRequiredInputs((prev) => {
       const requiredInputs = {
@@ -107,6 +113,7 @@ export const useBoardsWrite = () => {
     });
   }
 
+  // 비밀번호 입력
   const onChangePassword = (event: ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
 
@@ -115,6 +122,7 @@ export const useBoardsWrite = () => {
     setIsActive(false);
   };
 
+  // 주소 입력
   const onChangeAddressDetail = (event: ChangeEvent<HTMLInputElement>) => {
     setAddress({
       ...address,
@@ -122,6 +130,7 @@ export const useBoardsWrite = () => {
     });
   };
 
+  // 유튜브URL 입력
   const onChangeYoutubeUrl = (event: ChangeEvent<HTMLInputElement>) => {
     setYoutubeUrl(event.target.value);
   };
@@ -137,6 +146,39 @@ export const useBoardsWrite = () => {
   };
 
   /**
+   * 이미지 Firestorage 에 업로드
+   */
+  const imageUpload = async () => {
+    const imageUrlList: string[] = []; // 이미지 URL 리스트가 담길 배열 변수
+
+    try { // 이미지 파일 배열을 순환
+      for(const image of images) {
+        if(!image) continue;  // 빈값이면 저장하지 않고 다음으로 넘어감
+  
+        // Firebase Storage 에 저장할 경로 설정
+        const imageRef = ref(storage, `images/homework/${image.name}`);
+
+        // Storage에 파일 업로드
+        await uploadBytes(imageRef, image);
+
+        // 업로드가 완료된 후, 다운로드 가능한 URL 가져오기
+        const imageUrl = await getDownloadURL(imageRef);
+
+        // 리스트에 URL 저장
+        imageUrlList.push(imageUrl);
+      }
+
+      console.log("이미지 업로드 성공!", imageUrlList);
+      // 이미지 URL이 담긴 리스트 return
+      return imageUrlList;
+
+    } catch (error) {
+      console.error('이미지 업로드 실패', error);
+      return [];
+    }
+  }
+
+  /**
    * 게시글 등록
    */
   const onClickPost = async () => {
@@ -146,7 +188,17 @@ export const useBoardsWrite = () => {
       setTitleError(false);
       setContentsError(false);
 
+
       try {
+        // 이미지 업로드 후 URL 받아오기
+        const uploadedImagesUrls = await imageUpload();
+
+        // 등록할 데이터
+        const newData = {
+          ...boardData,
+          images: uploadedImagesUrls
+        }
+
         // 요청 데이터 검증
         const requestData = CreateBoardRequestSchema.parse(newData);
         // Firebase에 게시글 추가
@@ -307,5 +359,7 @@ export const useBoardsWrite = () => {
     isAddressAlertOpen,
     handleComplete,
     address,
+    images,
+    setImages
   };
 };
