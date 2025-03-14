@@ -48,8 +48,8 @@ export const fetchBoardsKeyApi = async (): Promise<FetchBoardsKeyResponse> => {
 
 /**
  * 🔁특정 key와 limit에 따라 제한된 데이터 가져오기(페이징)
- * @param startKey 
- * @param limit 
+ * @param {string} startKey 
+ * @param {number} limit 
  * @returns 
  */
 // ?orderBy="$key" (key를 기준으로 정렬),  startAt: 해당 값 이후의 데이터를 가져옴, limitToFirst: 한번에 가져올 데이터 갯수 제한,
@@ -72,7 +72,7 @@ export const fetchBoardsByKeyApi = async (
 
 /**
  * 🔁게시글 등록
- * @param newData 
+ * @param {Object} newData 
  * @returns 
  */
 export const createBoardApi = async (newData: CreateBoardRequest): Promise<CreateBoardResponse> => {
@@ -88,7 +88,7 @@ export const createBoardApi = async (newData: CreateBoardRequest): Promise<Creat
 
 /**
  * 🔁특정 게시글 가져오기
- * @param boardId 
+ * @param {string | string[]} boardId 
  * @returns {...}
  */
 export const fetchBoardApi = async (boardId: string | string[]): Promise<FetchBoardResponse> => {
@@ -105,8 +105,8 @@ export const fetchBoardApi = async (boardId: string | string[]): Promise<FetchBo
 
 /**
  * 🔁게시글 수정(업데이트)
- * @param boardId 
- * @param updatedData 
+ * @param {string} boardId 
+ * @param {Object} updatedData 
  */
 export const updateBoardApi = async (boardId: string, updatedData: IUpdateBoardRequst) => {
   // 요청 데이터 검증
@@ -116,7 +116,7 @@ export const updateBoardApi = async (boardId: string, updatedData: IUpdateBoardR
  
 /**
  * 🔁게시글 삭제
- * @param boardId 
+ * @param {string} boardId 
  */
 export const deleteBoardApi = async (boardId: string) => {
   // 요청 데이터 검증

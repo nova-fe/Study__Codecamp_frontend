@@ -186,16 +186,9 @@ export default function BoardsWrite(props: IBoardsWriteProps) {
             <div className="flex flex-col">
               <label className="label-text mb-2">사진 첨부</label>
               <div className="flex gap-4">
-                <ImageItem images={images} setImages={setImages} imageIndex={0} />
-                <ImageItem images={images} setImages={setImages} imageIndex={1} />
-                <ImageItem images={images} setImages={setImages} imageIndex={2} />
-
-                {/* <button className="bg-plus-icon size-40 rounded-lg bg-gray-100 bg-[bottom_5rem_center] bg-no-repeat leading-[14rem] tracking-tighter text-gray-600">
-                  클릭해서 사진 업로드
-                </button>
-                <button className="bg-plus-icon size-40 rounded-lg bg-gray-100 bg-[bottom_5rem_center] bg-no-repeat leading-[14rem] tracking-tighter text-gray-600">
-                  클릭해서 사진 업로드
-                </button> */}
+                <ImageItem images={images} prevImage={prevData?.images?.[0] || "notImage"} setImages={setImages} imageIndex={0} />
+                <ImageItem images={images} prevImage={prevData?.images?.[1] || "notImage"} setImages={setImages} imageIndex={1} />
+                <ImageItem images={images} prevImage={prevData?.images?.[2] || "notImage"} setImages={setImages} imageIndex={2} />
               </div>
             </div>
           </div>

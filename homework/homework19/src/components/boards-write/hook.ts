@@ -20,16 +20,13 @@ export const useBoardsWrite = () => {
     contents: ''
   })
   const [password, setPassword] = useState('');
-  // const [writer, setWriter] = useState('');
-  // const [title, setTitle] = useState('');
-  // const [contents, setContents] = useState('');
   const [address, setAddress] = useState({
     zipcode: '',
     address: '',
     addressDetail: '',
   });
   const [youtubeUrl, setYoutubeUrl] = useState('');
-  const [images, setImages] = useState<(File | undefined)[]>([undefined, undefined, undefined]); // 이미지 data
+  const [images, setImages] = useState<(File | string)[]>(["notImage", "notImage", "notImage"]); // 이미지 data
 
   // 기존 게시글 내용 가져오기
   const [prevData, setPrevData] = useState<FetchBoardResponse>();
@@ -149,23 +146,29 @@ export const useBoardsWrite = () => {
    * 이미지 Firestorage 에 업로드
    */
   const imageUpload = async () => {
-    const imageUrlList: string[] = []; // 이미지 URL 리스트가 담길 배열 변수
+    const imageUrlList: (string)[] = []; // 이미지 URL 리스트가 담길 배열 변수
 
     try { // 이미지 파일 배열을 순환
       for(const image of images) {
-        if(!image) continue;  // 빈값이면 저장하지 않고 다음으로 넘어감
-  
-        // Firebase Storage 에 저장할 경로 설정
-        const imageRef = ref(storage, `images/homework/${image.name}`);
-
-        // Storage에 파일 업로드
-        await uploadBytes(imageRef, image);
-
-        // 업로드가 완료된 후, 다운로드 가능한 URL 가져오기
-        const imageUrl = await getDownloadURL(imageRef);
-
-        // 리스트에 URL 저장
-        imageUrlList.push(imageUrl);
+        if(image === "notImage") {
+          imageUrlList.push("notImage");
+          // 빈값이면 Storage에는 저장하지 않고 다음으로 넘어감
+          continue;
+        }
+        if(typeof image === "string") { // 기존 이미지가 있었다면 해당 이미지 URL 값을 저장
+          imageUrlList.push(image);
+          continue;
+        }
+        if(image instanceof File) { // File 객체일 때만 업로드 실행
+          // Firebase Storage 에 저장할 경로 설정
+          const imageRef = ref(storage, `images/homework/${image.name}`);
+          // Storage에 파일 업로드
+          await uploadBytes(imageRef, image);
+          // 업로드가 완료된 후, 다운로드 가능한 URL 가져오기
+          const imageUrl = await getDownloadURL(imageRef);
+          // 리스트에 URL 저장
+          imageUrlList.push(imageUrl);
+        }
       }
 
       console.log("이미지 업로드 성공!", imageUrlList);
@@ -276,6 +279,10 @@ export const useBoardsWrite = () => {
   const onClickUpdate = async () => {
     if (checkPasswordInput === prevData?.password) {
       try {
+        // 이미지 업로드 후 URL 받아오기
+        const uploadedImagesUrls = await imageUpload();
+        console.log(uploadedImagesUrls);
+
         const updatedData = {
           ...prevData,
           title: boardRequiredInputs.title || prevData?.title,
@@ -289,7 +296,13 @@ export const useBoardsWrite = () => {
             addressDetail:
               address.addressDetail ?? prevData?.address?.addressDetail,
           },
+          images: [ 
+            uploadedImagesUrls[0] || prevData?.images?.[0],
+            uploadedImagesUrls[1] || prevData?.images?.[1],
+            uploadedImagesUrls[2] || prevData?.images?.[2]
+          ]
         };
+
 
         // 요청 데이터 검증
         const requestData:IUpdateBoardRequst = updatedData;
@@ -299,6 +312,7 @@ export const useBoardsWrite = () => {
 
         // 게시글이 추가된 후, 해당 게시글의 ID로 이동
         router.push(`/boards/${boardId}`);
+        console.log('게시글 수정 성공!');
       } catch (error) {
         toggleAlertOpen('passwordAlert');
         setAlertMessage(alertMessageList.error);

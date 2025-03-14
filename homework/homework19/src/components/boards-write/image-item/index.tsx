@@ -2,8 +2,9 @@ import Image from "next/image";
 import { useImageItem } from "./hook";
 import { IImageItemProps } from "./type";
 
-export default function ImageItem( {images, setImages, imageIndex}: IImageItemProps) {
-  const { onClickImageButton, fileRef, onChangeImages, previewImageUrl, onClickImageDelete } = useImageItem( {images, setImages, imageIndex} );
+export default function ImageItem( {images, prevImage, setImages, imageIndex}: IImageItemProps) {
+  const { onClickImageButton, fileRef, onChangeImages, previewImageUrl, onClickImageDelete } = useImageItem( {images, prevImage, setImages, imageIndex} );
+
   return (
     <>
       <button 
@@ -18,9 +19,10 @@ export default function ImageItem( {images, setImages, imageIndex}: IImageItemPr
         />
         {
           previewImageUrl ? (
+          // previewImageUrl 이 있으면 실행, 근데 prevImage가 notImage는 아니여야함
             <span>
-              <Image 
-                src={previewImageUrl} 
+              <img
+                src={previewImageUrl !== "notImage" ? previewImageUrl : ''}
                 className="absolute -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 w-full h-auto object-contain max-h-full max-x-full" 
                 alt="" 
                 width={0}
