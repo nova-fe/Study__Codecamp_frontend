@@ -7,24 +7,33 @@ import { fileValidator } from '@/commons/libraries/fileValidator';
 
 export const useImageItem = ( {images, setImages, prevImage, imageIndex}:IImageItemProps ) => {
   const [imageName, setImageName] = useState( '');
-  const [previewImageUrl, setPreviewImageUrl] = useState<(string)>(prevImage);
+  const [previewImageUrl, setPreviewImageUrl] = useState<(string)>('');
   const fileRef = useRef<HTMLInputElement>(null);
   
+  // prevImage로 기본 이미지 설정 (작은 이미지 미리보기용)
+  useEffect( () => {
+    console.log('test1');
+    // prevImage가 "notImage"일 경우 이미지 초기화
+    if (prevImage !== "notImage" && previewImageUrl !== prevImage) {
+      setPreviewImageUrl(prevImage);
+    }
+  }, [prevImage, previewImageUrl]);
+
   // 기존 이미지 호출 및 저장
   useEffect(() => {
-    if (prevImage === "notImage") {
-      setPreviewImageUrl('');
-    }
-    if (prevImage !== "notImage") {
-      // 기본 이미지 저장
-      const copyImages = [...images];
+    console.log('test2');
+    // 기본 이미지를 복사한 배열 생성
+    const copyImages = [...images];
+
+    // prevImage가 "notImage"가 아니고, 이미 해당 이미지가 없을 때만 업데이트
+    if(prevImage !== "notImage" && copyImages[imageIndex] !== prevImage) {
+      // 이미지가 정상적으로 있다면, 해당 인덱스에 prevImage를 넣어줌
       copyImages[imageIndex] = prevImage;
-      // 미리보기 이미지 호출
-      setPreviewImageUrl(prevImage);
       // 기본 이미지 state에 저장
       setImages(copyImages);
     }
-  }, [prevImage]);
+  }, [images, prevImage, imageIndex, setImages]);
+  
 
   // 이미지 선택
   const onChangeImages = (event: ChangeEvent<HTMLInputElement>) => {
@@ -45,10 +54,14 @@ export const useImageItem = ( {images, setImages, prevImage, imageIndex}:IImageI
     setPreviewImageUrl(filePreviews);
 
     // 부모 컴포넌트에 해당 파일 저장
-    // 기존 prevImage를 교체함
     const copyImages = [...images];
-    copyImages[imageIndex] = file ? file : "notImage";
-    console.log(copyImages);
+    if (file) { // 기존 prevImage를 교체함
+      copyImages[imageIndex] = file
+    } else if (prevImage !== "notImage") {
+      copyImages[imageIndex] = prevImage
+    } else {
+      copyImages[imageIndex] = "notImage";
+    }
     setImages(copyImages);
     setImageName(file.name);
   }

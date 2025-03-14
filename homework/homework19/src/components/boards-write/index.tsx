@@ -186,9 +186,16 @@ export default function BoardsWrite(props: IBoardsWriteProps) {
             <div className="flex flex-col">
               <label className="label-text mb-2">사진 첨부</label>
               <div className="flex gap-4">
-                <ImageItem images={images} prevImage={prevData?.images?.[0] || "notImage"} setImages={setImages} imageIndex={0} />
-                <ImageItem images={images} prevImage={prevData?.images?.[1] || "notImage"} setImages={setImages} imageIndex={1} />
-                <ImageItem images={images} prevImage={prevData?.images?.[2] || "notImage"} setImages={setImages} imageIndex={2} />
+                {
+                  images.map((image, index) => (
+                    <ImageItem
+                      key={index}
+                      images={images} 
+                      prevImage={prevData?.images?.[index] || "notImage"} 
+                      setImages={setImages} 
+                      imageIndex={index} />
+                  ))
+                }
               </div>
             </div>
           </div>
