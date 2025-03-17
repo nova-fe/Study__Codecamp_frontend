@@ -281,7 +281,6 @@ export const useBoardsWrite = () => {
       try {
         // 이미지 업로드 후 URL 받아오기
         const uploadedImagesUrls = await imageUpload();
-        console.log(uploadedImagesUrls);
 
         const updatedData = {
           ...prevData,

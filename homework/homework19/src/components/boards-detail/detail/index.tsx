@@ -8,6 +8,7 @@ import YouTube, { YouTubeProps } from 'react-youtube';
 
 export default function BoardsDetail() {
   const { data, boardId, getYoutubeIdFromUrl } = useBoardsDetail();
+  console.log(data?.images);
 
   return (
     <div>
@@ -76,14 +77,25 @@ export default function BoardsDetail() {
 
             {/* 내용 */}
             <div className="mb-6 font-normal text-black">
-              <Image
-                className="mb-6 w-[400px]"
-                src="/images/d2.png"
-                alt="img"
-                width={0}
-                height={0}
-                sizes="100vw"
-              />
+              <div className='flex flex-col items-center'>
+                {
+                  data?.images && data?.images.map((image, index) => {
+                    if (image !== "notImage") { // 이미지가 있을 경우만(notImage가 아닐 경우만) 이미지 표시
+                      return (
+                        <Image
+                        key={index}
+                        className="mb-6 w-[400px]"
+                        src={image}
+                        alt="img"
+                        width={0}
+                        height={0}
+                        sizes="100vw"
+                      />
+                      )
+                    }
+                  })
+                }
+              </div>
               <p>{data?.contents}</p>
             </div>
 

@@ -19,5 +19,5 @@ export interface IUpdateBoardRequst {
       addressDetail?: string | undefined;
     }
   | undefined;
-  images?: string[];
+  images?: (string)[];
 }

@@ -24,7 +24,7 @@ export const BoardsSchema = z.object({
       addressDetail: z.string().optional(),
     })
     .optional(), // 주소는 선택사항
-  images: z.array(z.string()),
+  images: z.array(z.string()).optional(),
 });
 
 /**
@@ -102,7 +102,7 @@ export const UpdateBoardRequestSchema = z.object({
         addressDetail: z.string().optional(),
       })
       .optional(), // 주소는 선택사항
-    images: z.array(z.string()),
+    images: z.array(z.string()).optional(),
   }),
 });
 // 게시글 업데이트 요청 타입
