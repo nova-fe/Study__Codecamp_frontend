@@ -187,11 +187,11 @@ export default function BoardsWrite(props: IBoardsWriteProps) {
               <label className="label-text mb-2">사진 첨부</label>
               <div className="flex gap-4">
                 {
-                  images.map((image, index) => (
+                  images.map((imageItem, index) => (
                     <ImageItem
                       key={index}
-                      images={images} 
-                      prevImage={prevData?.images?.[index] || "notImage"} 
+                      images={images}
+                      prevImage={prevData?.images ?? ["notImage", "notImage", "notImage"]}
                       setImages={setImages} 
                       imageIndex={index} />
                   ))
