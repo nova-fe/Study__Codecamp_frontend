@@ -89,20 +89,17 @@ export default function StaticRoutingMovedPage() {
 
     setData(posts);
     setIsFilteredEmpty(false);
-  }, [currentPage, filteredKeyList, allPostsData]); // 현재 페이지, keyList, 게시글 데이터가 변할 때마다 화면 리렌더링
+  }, [currentPage, filteredKeyList, allPostsData, isFilteredEmpty]); // 현재 페이지, keyList, 게시글 데이터가 변할 때마다 화면 리렌더링
 
   return (
     <div>
       검색어입력: <input className="border" type='text' value={search} onChange={onChangeSearch}/>
       <button onClick={onClickSearch}>검색하기</button>
 
-      {
-        isFilteredEmpty && (
-          <p>비어있어요</p>
-        )
-      }
 
-      {data?.map((el, index) => (
+      {isFilteredEmpty ? 
+        (<p>게시글이 없습니다.</p>) : 
+        data?.map((el, index) => (
         <div key={index}>
           <span style={{ margin: '10px' }}>{el?.writer}</span>
           <span style={{ margin: '10px' }}>{el?.title}</span>
