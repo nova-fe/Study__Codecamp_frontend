@@ -3,52 +3,86 @@
 import BoardsList from '@/components/boards-list/list';
 import Pagination from '@/components/boards-list/pagination';
 import { useState, useEffect } from 'react';
-import { fetchBoardsByKeyApi, fetchBoardsKeyApi, deleteBoardApi } from '@/api/boards';
-import { FetchBoardsByKeyArray, FetchBoardsByKeyResponse, FetchBoardsKeyResponse } from '@/schemas';
-
-
+import {
+  fetchBoardsKeyApi,
+  deleteBoardApi,
+  fetchBoardsApi,
+} from '@/api/boards';
+import {
+  FetchBoardsByKeyArray,
+  FetchBoardsKeyResponse,
+  FetchBoardsResponse,
+} from '@/schemas';
+import Search from '../../components/boards-list/search';
+import Link from 'next/link';
+import Image from 'next/image';
 
 export default function BoardsListPage() {
   const [data, setData] = useState<FetchBoardsByKeyArray>([]); // 게시글 데이터
   const [keyList, setKeyList] = useState<FetchBoardsKeyResponse>([]); // key 목록
-  const [currentPage, setCurrentPage] = useState(1);  // 현재 페이지
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
   const limitPage = 10; // 한 페이지에 보여줄 게시글 갯수
+  const [allPostsData, setAllPostsData] = useState<FetchBoardsResponse>({}); // 모든 게시글 데이터
+  const [filteredKeyList, setFilteredKeyList] = useState<FetchBoardsKeyResponse>([]); // 검색(필터링) key 목록
+  const [isFilteredEmpty, setIsFilteredEmpty] = useState(false);  // 검색된 것이 없는지 여부 확인
 
   /**
-   * 현재 페이지 데이터 limit 갯수만큼 가져오기
-   */
-  useEffect(() => {
-    const loadData = async () => {
-      if (keyList.length === 0) return;
-
-      // keyList에서 현재 페이지에서 -1을 한 값에 limit을 곱한값을 startKey에 담음
-      const startKey = keyList[(currentPage - 1) * limitPage];
-
-      const data = await fetchBoardsByKeyApi(startKey, limitPage);
-
-      // 목록 객체 배열화
-      const boardsArray = data ? Object.keys(data).map((key, index) => ({
-        id: key,  // 고유 Key
-        ...data[key]
-      })) : [];
-
-      setData(boardsArray);
-    }
-
-    loadData();
-  }, [currentPage, keyList]);
-
-  /**
-   * key 목록 가져오기
+   * 목록 가져오기
    */
   useEffect(() => {
     const loadKeys = async () => {
+      // 게시글의 모든 key 가져오기
       const keys = await fetchBoardsKeyApi();
+      // 모든 게시글 가져오기
+      const posts = await fetchBoardsApi();
+      // 해당 값들을 state에 저장
       setKeyList(keys);
-    }
+      setFilteredKeyList(keys);  // 필터링된 키 목록을 기본적으로 모든 key로 설정
+      setAllPostsData(posts);
+    };
 
     loadKeys();
   }, []);
+
+  /**
+   * 게시글 출력(현재 페이지 데이터 limit 갯수만큼 가져오기)
+   */
+  useEffect(() => {
+    const loadData = async () => {
+      if (filteredKeyList.length === 0) {
+        setIsFilteredEmpty(true);
+        return;
+      }
+
+
+
+      // const startKey = keyList[(currentPage - 1) * limitPage];
+
+      // const data = await fetchBoardsByKeyApi(startKey, limitPage);
+
+      // // 목록 객체 배열화
+      // const boardsArray = data ? Object.keys(data).map((key, index) => ({
+      //   id: key,  // 고유 Key
+      //   ...data[key]
+      // })) : [];
+
+      // setData(boardsArray);
+
+      // 현재 페이지의 시작 index 계산
+      const startIdx = (currentPage - 1) * limitPage;
+      // 필터링된 key 목록에서, startIdx, 첫 index에 보여지길 원하는 게시글 수만큼 자름
+      const paginatedKeys = filteredKeyList.slice(startIdx, startIdx + limitPage);
+      // 필터링된 key 목록에서 해당 key에 해당하는 게시글의 데이터 가져오기
+      const posts = paginatedKeys.map((key) => {
+        return {id: key, ...allPostsData[key]};
+      });
+
+      setData(posts);
+      setIsFilteredEmpty(false);
+    };
+
+    loadData();
+  }, [currentPage, filteredKeyList, allPostsData, isFilteredEmpty]);  
 
   /**
    * 게시글 삭제하기
@@ -64,7 +98,7 @@ export default function BoardsListPage() {
         const updateBoards = prevData?.filter(board => board.id !== boardId);
 
         // 게시글 번호 재생성하여 return
-        return updateBoards?.map((board) => ({
+        return updateBoards?.map(board => ({
           ...board,
         }));
       });
@@ -81,9 +115,39 @@ export default function BoardsListPage() {
   return (
     <>
       <div className="container mx-auto max-w-screen-xl py-10">
+        <div className="mb-6 flex justify-between">
+          <Search 
+            setFilteredKeyList={setFilteredKeyList}
+            keyList={keyList} 
+            allPostsData={allPostsData}
+          />
+          <Link href="/new">
+            <button className="btn-primary btn-md flex items-center gap-2">
+              <Image
+                className="h-auto w-[19px]"
+                src="/images/new.png"
+                alt="트립토크 등록"
+                width={0}
+                height={0}
+                sizes="100vw"
+              />
+              트립토크 등록
+            </button>
+          </Link>
+        </div>
         <div className="rounded-2xl px-12 py-6 shadow-[0_0_20px_-0px_rgba(0,0,0,0.08)]">
-          <BoardsList data={data} onClickDelete={onClickDelete} currentPage={currentPage} limitPage={limitPage} />
-          <Pagination keyList={keyList} currentPage={currentPage} setCurrentPage={setCurrentPage} limitPage={limitPage} />
+          <BoardsList
+            data={data}
+            onClickDelete={onClickDelete}
+            currentPage={currentPage}
+            limitPage={limitPage}
+          />
+          <Pagination
+            keyList={keyList}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            limitPage={limitPage}
+          />
         </div>
       </div>
     </>
