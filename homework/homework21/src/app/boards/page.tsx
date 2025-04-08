@@ -39,10 +39,11 @@ export default function BoardsListPage() {
       setKeyList(keys);
       setFilteredKeyList(keys);  // 필터링된 키 목록을 기본적으로 모든 key로 설정
       setAllPostsData(posts);
+      console.log("게시글 목록을 가져와요.");
     };
 
     loadKeys();
-  }, []);
+  }, [data.length]);
 
   /**
    * 게시글 출력(현재 페이지 데이터 limit 갯수만큼 가져오기)
@@ -51,27 +52,15 @@ export default function BoardsListPage() {
     const loadData = async () => {
       if (filteredKeyList.length === 0) {
         setIsFilteredEmpty(true);
+        setData([]);
         return;
       }
-
-
-
-      // const startKey = keyList[(currentPage - 1) * limitPage];
-
-      // const data = await fetchBoardsByKeyApi(startKey, limitPage);
-
-      // // 목록 객체 배열화
-      // const boardsArray = data ? Object.keys(data).map((key, index) => ({
-      //   id: key,  // 고유 Key
-      //   ...data[key]
-      // })) : [];
-
-      // setData(boardsArray);
 
       // 현재 페이지의 시작 index 계산
       const startIdx = (currentPage - 1) * limitPage;
       // 필터링된 key 목록에서, startIdx, 첫 index에 보여지길 원하는 게시글 수만큼 자름
       const paginatedKeys = filteredKeyList.slice(startIdx, startIdx + limitPage);
+
       // 필터링된 key 목록에서 해당 key에 해당하는 게시글의 데이터 가져오기
       const posts = paginatedKeys.map((key) => {
         return {id: key, ...allPostsData[key]};
@@ -79,10 +68,11 @@ export default function BoardsListPage() {
 
       setData(posts);
       setIsFilteredEmpty(false);
+      console.log("게시글이 다시 출력돼요.");
     };
 
     loadData();
-  }, [currentPage, filteredKeyList, allPostsData, isFilteredEmpty]);  
+  }, [currentPage, filteredKeyList]);
 
   /**
    * 게시글 삭제하기
@@ -105,12 +95,13 @@ export default function BoardsListPage() {
 
       // keyList 업데이트
       setKeyList([...keyList]);
-
+      console.log("삭제 버튼을 눌렀어요.");
       return;
     } catch (error) {
       console.log('게시글 삭제 실패' + error);
     }
   };
+
 
   return (
     <>
@@ -143,7 +134,7 @@ export default function BoardsListPage() {
             limitPage={limitPage}
           />
           <Pagination
-            keyList={keyList}
+            filteredKeyList={filteredKeyList}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
             limitPage={limitPage}

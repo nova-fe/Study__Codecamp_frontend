@@ -113,7 +113,7 @@ export const updateBoardApi = async (boardId: string, updatedData: IUpdateBoardR
   UpdateBoardRequestSchema.parse({boardId, updatedData});
   await axios.patch(`${BASE_URL}/homework/${boardId}.json`, updatedData);
 };
- 
+
 /**
  * 🔁게시글 삭제
  * @param {string} boardId 

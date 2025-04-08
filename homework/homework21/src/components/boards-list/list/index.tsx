@@ -11,14 +11,15 @@ export default function BoardsList({ data, onClickDelete, currentPage, limitPage
       <div className="grid grid-cols-[auto_1fr_auto_auto] gap-2 px-6 py-4">
         <div className="w-16 text-center text-base font-medium">번호</div>
         <div className="text-base font-medium">제목</div>
-        <div className="w-[6.5rem] text-center text-base font-medium">
-          작성자
-        </div>
+        <div className="w-[6.5rem] text-center text-base font-medium">작성자</div>
         <div className="w-24 text-center text-base font-medium">날짜</div>
       </div>
       <div className="grid gap-3">
-        {data?.map((board, index) => {
+        {data.length <= 0 && <span className='text-center py-40 border-t border-b border-gray-100 '>게시글이 없습니다.</span>}
+
+        {data && data?.map((board, index) => {
           const listIndex = (currentPage - 1) * limitPage + index + 1;
+
           return (
             <div
               className="group relative grid cursor-pointer grid-cols-[auto_1fr_auto_auto] gap-2 rounded-lg border border-gray-100 px-6 py-3"
@@ -55,9 +56,6 @@ export default function BoardsList({ data, onClickDelete, currentPage, limitPage
           )
         })}
       </div>
-
-
-
     </>
   );
 }

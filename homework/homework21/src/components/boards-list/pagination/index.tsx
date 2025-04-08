@@ -3,7 +3,7 @@ import { KeyboardArrowRightRounded, KeyboardArrowLeftRounded } from '@mui/icons-
 import { usePagination } from './hook';
 import { IPaginationProps } from './type';
 
-export default function Pagination({ keyList, currentPage, setCurrentPage, limitPage }: IPaginationProps) {
+export default function Pagination({ filteredKeyList, currentPage, setCurrentPage, limitPage }: IPaginationProps) {
   const {
     startPage,
     endPage,
@@ -12,13 +12,13 @@ export default function Pagination({ keyList, currentPage, setCurrentPage, limit
     onClickPageChante,
     onClickPrevPage,
     onClickNextPage
-  } = usePagination({ keyList, currentPage, setCurrentPage, limitPage });
-
-  // 다음 페이지 이동
+  } = usePagination({ filteredKeyList, currentPage, setCurrentPage, limitPage });
 
   return (
     <div className="flex justify-center gap-2 my-2 items-center">
-      <KeyboardArrowLeftRounded className={`${startPage === 1 ? "hidden" : "text-gray-800"} cursor-pointer`} onClick={onClickPrevPage} />
+      {filteredKeyList.length > 0 && (
+        <KeyboardArrowLeftRounded className={`${startPage === 1 ? "hidden" : "text-gray-800"} cursor-pointer`} onClick={onClickPrevPage} />
+      )}
       <div className='flex items-center gap-1'>
         {
           Array.from({ length: endPage - startPage + 1 }, (_, index) => (
@@ -28,7 +28,9 @@ export default function Pagination({ keyList, currentPage, setCurrentPage, limit
           ))
         }
       </div>
-      <KeyboardArrowRightRounded className={`${currentPageGroup < totalGroups - 1 ? "text-gray-800" : "hidden"} cursor-pointer`} onClick={onClickNextPage} />
+      {filteredKeyList.length > 0 && (
+        <KeyboardArrowRightRounded className={`${currentPageGroup < totalGroups - 1 ? "text-gray-800" : "hidden"} cursor-pointer`} onClick={onClickNextPage} />        
+      )}
     </div>
   )
 }

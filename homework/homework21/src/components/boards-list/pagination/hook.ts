@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { IPaginationProps } from './type';
 
 export const usePagination = ({
-  keyList,
+  filteredKeyList,
   currentPage,
   setCurrentPage,
   limitPage,
@@ -13,7 +13,7 @@ export const usePagination = ({
   const pagesLimitGroup = 5; // 한 그룹에 보여질  페이지 버튼 수
 
   // 총 페이지 수 계산
-  const totalPages = Math.ceil(keyList.length / limitPage);
+  const totalPages = Math.ceil(filteredKeyList.length / limitPage);
   const totalGroups = Math.ceil(totalPages / pagesLimitGroup);
 
   // 현재 그룹의 페이지 시작과 끝 계산

@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 
 export interface IPaginationProps {
-  keyList: string[];
+  filteredKeyList: string[];
   currentPage?: number;
   setCurrentPage: Dispatch<SetStateAction<number>>;
   limitPage: number;
