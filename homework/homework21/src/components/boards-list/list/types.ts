@@ -19,4 +19,5 @@ export interface IBoardsListProps {
   onClickDelete: (boardId: string) => void;
   currentPage: number;
   limitPage: number;
+  searchKeyword: string;
 }

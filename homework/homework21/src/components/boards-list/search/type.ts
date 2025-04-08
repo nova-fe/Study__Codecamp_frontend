@@ -5,4 +5,6 @@ export interface ISearchProps {
   setFilteredKeyList: Dispatch<SetStateAction<FetchBoardsKeyResponse>>,
   keyList: string[],
   allPostsData: FetchBoardsResponse,
+  searchKeyword: string,
+  setSearchKeyword: Dispatch<SetStateAction<string>>,
 }

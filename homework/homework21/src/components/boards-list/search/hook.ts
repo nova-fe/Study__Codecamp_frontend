@@ -3,8 +3,8 @@
 import { ChangeEvent, useState } from "react";
 import { ISearchProps } from "./type";
 
-export const useSearch = ({setFilteredKeyList, keyList, allPostsData}: ISearchProps) => {
-  const [searchWord, setSearchWord] = useState("");
+export const useSearch = ({setFilteredKeyList, keyList, allPostsData, searchKeyword, setSearchKeyword}: ISearchProps) => {
+  const [searchWord, setSearchWord] = useState<string>(searchKeyword);
 
   const onChangeSearch = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchWord(event.target.value);
@@ -13,6 +13,7 @@ export const useSearch = ({setFilteredKeyList, keyList, allPostsData}: ISearchPr
   const onClickSearch = () => {
     if(!searchWord.trim()) {
       setFilteredKeyList(keyList);
+      setSearchKeyword('');
       return;
     }
 
@@ -23,10 +24,11 @@ export const useSearch = ({setFilteredKeyList, keyList, allPostsData}: ISearchPr
     });
 
     setFilteredKeyList(filteredKeys); // 필터링된 key 목록 업데이트
+    setSearchKeyword(searchWord);
   };
 
   return {
     onChangeSearch,
-    onClickSearch
+    onClickSearch,
   }
 }

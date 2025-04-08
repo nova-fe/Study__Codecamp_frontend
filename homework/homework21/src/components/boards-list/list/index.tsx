@@ -3,8 +3,9 @@ import { useBoardsList } from './hook';
 import { IBoardsListProps } from './types';
 
 
-export default function BoardsList({ data, onClickDelete, currentPage, limitPage }: IBoardsListProps) {
+export default function BoardsList({ data, onClickDelete, currentPage, limitPage, searchKeyword }: IBoardsListProps) {
   const { onClickLink } = useBoardsList();
+  console.log(searchKeyword);
 
   return (
     <>
@@ -29,7 +30,17 @@ export default function BoardsList({ data, onClickDelete, currentPage, limitPage
               <div className="w-16 text-center text-sm font-light text-gray-400">
                 {listIndex}
               </div>
-              <div className="text-base font-medium">{board?.title}</div>
+              <div className="text-base font-medium">
+                {
+                /* .replaceAll() : 검색어의 앞과 뒤에 @#$ 라는 임의의 비밀코드로 감싼 것으로 교체함 
+                  .split() : 그걸 @#$ 로 또 나눠서 배열로 만들고( ["@#$", "검색어", "@#$"] )
+                  .map() : 그 배열을 순회하면서, 검색어 일 때에만 span 태그에 red로 스타일 지정
+                */
+                  board?.title.replaceAll(searchKeyword, `@#$${searchKeyword}@#$`).split("@#$").map((el, index) => {
+                    return <span key={`${el}_${index}`} style={{color: el === searchKeyword ? "red" : ""}}>{el}</span>
+                  })
+                }
+              </div>
               <div className="w-[6.5rem] text-center text-base font-light">
                 {board?.writer}
               </div>

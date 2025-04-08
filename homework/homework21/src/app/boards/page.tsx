@@ -25,6 +25,8 @@ export default function BoardsListPage() {
   const [allPostsData, setAllPostsData] = useState<FetchBoardsResponse>({}); // 모든 게시글 데이터
   const [filteredKeyList, setFilteredKeyList] = useState<FetchBoardsKeyResponse>([]); // 검색(필터링) key 목록
   const [isFilteredEmpty, setIsFilteredEmpty] = useState(false);  // 검색된 것이 없는지 여부 확인
+  const [searchKeyword, setSearchKeyword] = useState(""); // 검색어
+  const [searchedWord, setSearchedWord] = useState('');
 
   /**
    * 목록 가져오기
@@ -43,7 +45,7 @@ export default function BoardsListPage() {
     };
 
     loadKeys();
-  }, [data.length]);
+  }, []);
 
   /**
    * 게시글 출력(현재 페이지 데이터 limit 갯수만큼 가져오기)
@@ -111,6 +113,8 @@ export default function BoardsListPage() {
             setFilteredKeyList={setFilteredKeyList}
             keyList={keyList} 
             allPostsData={allPostsData}
+            searchKeyword={searchKeyword}
+            setSearchKeyword={setSearchKeyword}
           />
           <Link href="/new">
             <button className="btn-primary btn-md flex items-center gap-2">
@@ -132,6 +136,7 @@ export default function BoardsListPage() {
             onClickDelete={onClickDelete}
             currentPage={currentPage}
             limitPage={limitPage}
+            searchKeyword={searchKeyword}
           />
           <Pagination
             filteredKeyList={filteredKeyList}

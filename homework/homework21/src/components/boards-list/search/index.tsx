@@ -5,8 +5,8 @@ import { ChangeEvent, useState } from "react";
 import { ISearchProps } from "./type";
 import { useSearch } from "./hook";
 
-export default function Search( {setFilteredKeyList, keyList, allPostsData}: ISearchProps ) {
-  const {onChangeSearch, onClickSearch} = useSearch({setFilteredKeyList, keyList, allPostsData})
+export default function Search( {setFilteredKeyList, keyList, allPostsData, searchKeyword, setSearchKeyword}: ISearchProps ) {
+  const {onChangeSearch, onClickSearch} = useSearch({setFilteredKeyList, keyList, allPostsData, searchKeyword, setSearchKeyword})
 
   return (
     <div className="flex items-center">
