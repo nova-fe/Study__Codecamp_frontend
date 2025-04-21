@@ -1,0 +1,86 @@
+`http://numbersapi.com/random?min=1&max=50`
+`https://jsonplaceholder.typicode.com/posts/${num}`
+`https://jsonplaceholder.typicode.com/users/${userId}`
+
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <title>콜백과 친구들</title>
+  <script>
+    // function addEventListener(aaa, bbb) {
+    //   // 셋팅된 API 주소로 요청이 끝났다고 가정
+        // const res = 70; 셋팅된 API 주소에서 받아온 결과
+
+        // bbb(res)
+    // }
+
+    // 콜백지옥의 간단한 예시
+    const onClickCallback = () => {
+      const aa = new XMLHttpRequest();
+      aa.open("get", `http://numbersapi.com/random?min=1&max=50`);
+      aa.send();
+      aa.addEventListener("load", (res) => {
+        // console.log(res);//API 요청 결과 : 43 is a... 이런식으로 랜덤 숫자가 받아와짐
+        const num = res.target.response.split(' ')[0];
+
+        const bb = new XMLHttpRequest();
+        bb.open("get", `https://jsonplaceholder.typicode.com/posts/${num}`);
+        bb.send();
+        bb.addEventListener("load", (res) => {
+          console.log(res); // 게시글에 대한 내용이 나옴
+          const userId = JSON.parse(res.target.response).userId;  // 해당 게시글의 userId값 가져옴
+
+          const cc = new XMLHttpRequest();
+          cc.open("get", `https://jsonplaceholder.typicode.com/users/${userId}`); // 가져온 userId 값으로 유저 정보 가져옴
+          cc.send();
+          cc.addEventListener("load", (res) => {
+            console.log(res);
+          })
+        });
+      })
+    }
+
+    // 프로미스 체인 -> 실행 순서에 대한 예측이 어려움
+    const onClickPromise = () => {
+      fetch(`http://numbersapi.com/random?min=1&max=50`)
+        .then((res) => res.text())  // 랜덤 숫자
+        .then((qqq) => {  
+          const num = qqq.split(" ")[0];
+          return fetch(`https://jsonplaceholder.typicode.com/posts/${num}`);
+        })
+        .then((res) => res.json())  // 게시글 정보
+        .then((qqq) => {
+          const userId = qqq.userId;
+          return fetch(`https://jsonplaceholder.typicode.com/users/${userId}`);
+        })
+        .then((res) => res.json())  // 유저 정보
+        .then((qqq) => console.log(qqq));
+    }
+
+    // fetch, axios 등 대표적인 Promise를 지원하는 기능 
+    // fetch, axios 등을 기다리는 2가지 방법
+    // 1. .then() 활용
+    // 2. await 활용 => 주의) await은 아무데나 붙인다고 뒤에걸 기다리는 것이 아님
+    const onClickAsyncAwait = async () => {
+      const res1 = await fetch(`http://numbersapi.com/random?min=1&max=50`);
+      const qqq = await res1.text();
+      const num = qqq.split(" ")[0];
+
+      const res2 = await fetch(`https://jsonplaceholder.typicode.com/posts/${num}`);
+      const qqq2 = await res2.json();
+      const userId = qqq2.userId;
+
+      const res3 = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`);
+      const qqq3 = await res3.json();
+      console.log(qqq3);
+    }
+
+  </script>
+</head>
+<body>
+  <button onclick="onClickCallback()">Callback 연습하기!!</button>
+  <button onclick="onClickPromise()">Promise 연습하기!!</button>
+  <button onclick="onClickAsyncAwait()">AsyncAwait 연습하기!!</button>
+</body>
+</html>
